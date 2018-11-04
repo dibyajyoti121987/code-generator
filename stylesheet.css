@@ -1,0 +1,16 @@
+#navigation{
+	background-color: lightgrey;
+    width: 1100px;
+    border: 25px solid black;
+    padding: 25px;
+    margin: 25px;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+	padding: 12px 16px;
+}
+
+.dropdown-parent{
+};
