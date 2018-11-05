@@ -1,154 +1,133 @@
-<LINK REL=StyleSheet HREF="C:/files/stylesheet.css" TYPE="text/css" MEDIA=screen>
 <html>
-	<body onload="generateCodeOnload()">
-	<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>	
-		<script type="text/javascript">
-		var textGlobal="";
-		var i=0;
-		var j=0;
-		function generateCodeOnload()
-		{
-			document.getElementById("causeDiv").style.display="none";
-			document.getElementById("effectDiv").style.display="none";
-			document.getElementById("previewAction").style.display="none";
-			document.getElementById("effects").value="-1";
-			document.getElementById("cause").value="-1";
-			document.getElementById("watchReg").value="";
-			document.getElementById("label").value="";			     
-			document.getElementById("targetAddr").value="";
-			document.getElementById("operation").value="-1";
-			document.getElementById("bitNumber").value="";
-			document.getElementById("targetEffectAddr").value="";
-			document.getElementById("operationEffect").value="-1";
-			document.getElementById("bitNumberEffect").value="";
-			document.getElementById("inputFileNameToSaveAs").value=""; 
+
+<head>
+	<title>Code Generator</title>
+	<link rel=StyleSheet href="./stylesheet.css" type="text/css" media=screen>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+</head>
+
+<body onload="generateCodeOnload()">
+	<script type="text/javascript">
+		var textGlobal = "";
+		var i = 0;
+		var j = 0;
+		function generateCodeOnload() {
+			document.getElementById("causeDiv").style.display = "none";
+			document.getElementById("effectDiv").style.display = "none";
+			document.getElementById("previewAction").style.display = "none";
+			document.getElementById("effects").value = "-1";
+			document.getElementById("cause").value = "-1";
+			document.getElementById("watchReg").value = "";
+			document.getElementById("label").value = "";
+			document.getElementsByName("targetAddr").value = "";
+			document.getElementById("operation").value = "-1";
+			document.getElementsByName("bitNumber").value = "";
+			document.getElementsByName("targetEffectAddr").value = "";
+			document.getElementById("operationEffect").value = "-1";
+			document.getElementsByName("bitNumberEffect").value = "";
+			document.getElementById("inputFileNameToSaveAs").value = "";
+			
+			$('#operation').prop('selectedIndex',-1);
+			$('#operationEffect').prop('selectedIndex',-1);
+			
+			$('.dropdown-parent-cause input[type="text"]').val('');
+			$('.dropdown-parent-effect input[type="text"]').val('');
 		}
-		function showCauseDiv()
-		{
+		function showCauseDiv() {
 			//alert("inside cause div onchange");
-			if(document.getElementById("cause").value=='yes')
-			{
-				document.getElementById("causeDiv").style.display="block";
+			if (document.getElementById("cause").value == 'yes') {
+				document.getElementById("causeDiv").style.display = "block";
 			}
-			else if(document.getElementById("cause").value=='no')
-			{
-				document.getElementById("causeDiv").style.display="none";
+			else if (document.getElementById("cause").value == 'no') {
+				document.getElementById("causeDiv").style.display = "none";
 			}
-		} 
-		function showEffectDiv()
-		{
+		}
+		function showEffectDiv() {
 			//alert("inside effect div onchange");
-			if(document.getElementById("effects").value=='yes')
-			{
-				document.getElementById("effectDiv").style.display="block";
+			if (document.getElementById("effects").value == 'yes') {
+				document.getElementById("effectDiv").style.display = "block";
 			}
-			else if(document.getElementById("effects").value=='no')
-			{
-				document.getElementById("effectDiv").style.display="none";
+			else if (document.getElementById("effects").value == 'no') {
+				document.getElementById("effectDiv").style.display = "none";
 			}
 		}
-		function previewAct(){
+		function previewAct() {
 			// alert("inside show preview");
-			document.getElementById("previewAction").style.display="block";
-			var textToSave=document.getElementById("prevAction").value;
-			var watchReg=document.getElementById("watchReg").value;
-			var label=document.getElementById("label").value;
-			var cause=document.getElementById("cause").value;       
-			var targetAddr=document.getElementById("targetAddr").value;
+			document.getElementById("previewAction").style.display = "block";
+			var causeText="";
+			var effectText="";
+			var textToSave = document.getElementById("prevAction").value;
+			var watchReg = document.getElementById("watchReg").value;
+			var label = document.getElementById("label").value;
+			var cause = document.getElementById("cause").value;
+			var effects = document.getElementById("effects").value;
 
-			var operation=document.getElementById("operation").value;
-			var bitNumber=document.getElementById("bitNumber").value;
-
-			var effects=document.getElementById("effects").value;
-
-			var targetEffectAddr=document.getElementById("targetEffectAddr").value;
-			var operationEffect=document.getElementById("operationEffect").value;
-
-			var bitNumberEffect=document.getElementById("bitNumberEffect").value;
-			if(cause=='yes' && effects=='yes')
-			{
-				if(textGlobal!="")
-				{
-					textToSave=textGlobal+"\nCAUSE_EFFECT{\nWATCH=[REG("+watchReg+")] \nLABEL=["+label+"] \nCAUSE: TARGET=[REG("+targetAddr+")] OP=["+operation+"] BIT=["+bitNumber+"] \nEFFECT: TARGET=[REG("+targetEffectAddr+")] OP=["+operationEffect+"] BIT=["+bitNumberEffect+"]}";
-					textGlobal=textToSave;
-				}
-				else
-				{
-					textToSave = "\CAUSE_EFFECT{\nWATCH=[REG("+watchReg+")] \nLABEL=["+label+"] \nCAUSE: TARGET=[REG("+targetAddr+")] OP=["+operation+"] BIT=["+bitNumber+"] \nEFFECT: TARGET=[REG("+targetEffectAddr+")] OP=["+operationEffect+"] BIT=["+bitNumberEffect+"]}";
-					textGlobal=textToSave;
-				}                                   
-			}
-			else if (cause=='yes' && effects=='no')
-			{		
-				if(textGlobal!="")
-				{
-					textToSave=textGlobal+"\nCAUSE_EFFECT{\nWATCH=[REG("+watchReg+")] \nLABEL=["+label+"] \nCAUSE: TARGET=[REG("+targetAddr+")] OP=["+operation+"] BIT=["+bitNumber+"]}";
-					textGlobal=textToSave;
-				}
-				else
-				{
-					textToSave ="\CAUSE_EFFECT{\nWATCH=[REG("+watchReg+")] \nLABEL=["+label+"]nCAUSE: TARGET=[REG("+targetAddr+")] OP=["+operation+"] BIT=["+bitNumber+"]}";
-					textGlobal=textToSave;
+			// Get Cause Values
+			var causeDiv_values = '';
+				$('.dropdown-parent-cause').each(function() {
+					//get values
+					var text1 = $(this).find('.targetAddr').val();
+					var text2 = $(this).find('#operation').val();
+					var text3 = $(this).find('.bitNumber').val();
+					causeDiv_values += '|'+ text1 +','+ text2 +','+ text3;
+				});
+			var count=(causeDiv_values.split("|").length - 1);
+			var cause_arr;
+			cause_arr=causeDiv_values.split("|");
+			for(i=1;i<=count;i++){
+				var cause_arr_val=cause_arr[i].split(",");
+				var addr=cause_arr_val[0];
+				var operation=cause_arr_val[1];
+				var bitNumber=cause_arr_val[2];
+				if(causeText==""){
+					causeText="CAUSE_EFFECT{\nWATCH=[REG(" + watchReg + ")] \nLABEL=[" + label + "] \nCAUSE: TARGET=[REG(" + addr + ")] OP=[" + operation + "] BIT=[" + bitNumber + "]";
+				}else{
+					causeText=causeText+"\nCAUSE: TARGET=[REG(" + addr + ")] OP=[" + operation + "] BIT=[" + bitNumber + "]";
 				}
 			}
-			document.getElementById("prevAction").value=textToSave;
+			if (cause == 'yes' && effects == 'yes') {
+				// Get Effect Div Values
+				var effectDiv_values = '';
+					$('.dropdown-parent-effect').each(function() {
+						//get values
+						var text1 = $(this).find('.targetEffectAddr').val();
+						var text2 = $(this).find('#operationEffect').val();
+						var text3 = $(this).find('.bitNumberEffect').val();
+						effectDiv_values += '|'+ text1 +','+ text2 +','+ text3;
+					});
+				var count_eff=(effectDiv_values.split("|").length - 1);
+				var effect_arr;
+				effect_arr=effectDiv_values.split("|");
+				for(i=1;i<=count_eff;i++){
+					var effect_arr_val=effect_arr[i].split(",");
+					var addrEff=effect_arr_val[0];
+					var operationEff=effect_arr_val[1];
+					var bitNumberEff=effect_arr_val[2];
+					if(effectText==""){
+						effectText="\nEFFECT: TARGET=[REG(" + addrEff + ")] OP=[" + operationEff + "] BIT=[" + bitNumberEff + "]";
+					}
+					else{
+						effectText=effectText+"\nEFFECT: TARGET=[REG(" + addrEff + ")] OP=[" + operationEff + "] BIT=[" + bitNumberEff + "]";
+					}
+				}
+				effectText=effectText+"}";
+				textToSave=causeText+effectText;
+			}
+			else if (cause == 'yes' && effects == 'no') {
+				causeText=causeText+"}";
+				textToSave=causeText;
+			}
+			textGlobal=textToSave;
+			document.getElementById("prevAction").value = textToSave;
 		}
-		function hidePreviewAct(){
-			// alert("inside hide preview");
-			document.getElementById("previewAction").style.display="none";
+		function hidePreviewAct() {
+			document.getElementById("previewAction").style.display = "none";
 		}
-		function saveTextAsFile()
-		{
-			var textToSave=document.getElementById("prevAction").value;
-			var watchReg=document.getElementById("watchReg").value;
-			var label=document.getElementById("label").value;
-			var cause=document.getElementById("cause").value;       
-			var targetAddr=document.getElementById("targetAddr").value;
-			var operation=document.getElementById("operation").value;
-			var bitNumber=document.getElementById("bitNumber").value;
 
-			var effects=document.getElementById("effects").value;
-			var targetEffectAddr=document.getElementById("targetEffectAddr").value;
-			var operationEffect=document.getElementById("operationEffect").value;
-			var bitNumberEffect=document.getElementById("bitNumberEffect").value;
-
-			if(cause!='-1' && cause=='yes'){
-			  //put validation alerts here
-			}
-
-			if(effects!='-1' && effects=='yes'){
-				//put validation alerts here
-			}
-									
-			if(cause=='yes' && effects=='yes')
-			{
-				if(textGlobal!="")
-				{
-					textToSave=textGlobal+"\nCAUSE_EFFECT{\nWATCH=[REG("+watchReg+")] \nLABEL=["+label+"] \nCAUSE: TARGET=[REG("+targetAddr+")] OP=["+operation+"] BIT=["+bitNumber+"] \nEFFECT: TARGET=[REG("+targetEffectAddr+")] OP=["+operationEffect+"] BIT=["+bitNumberEffect+"]}";
-					textGlobal=textToSave;
-				}
-				else
-				{
-					textToSave = "CAUSE_EFFECT{\nWATCH=[REG("+watchReg+")] \nLABEL=["+label+"] \nCAUSE: TARGET=[REG("+targetAddr+")] OP=["+operation+"] BIT=["+bitNumber+"] \nEFFECT: TARGET=[REG("+targetEffectAddr+")] OP=["+operationEffect+"] BIT=["+bitNumberEffect+"]}";
-					textGlobal=textToSave;
-				}                                   
-			}
-			else if (cause=='yes' && effects=='no')
-			{		
-				if(textGlobal!="")
-				{
-					textToSave=textGlobal+"\nCAUSE_EFFECT{\nWATCH=[REG("+watchReg+")] \nLABEL=["+label+"] \nCAUSE: TARGET=[REG("+targetAddr+")] OP=["+operation+"] BIT=["+bitNumber+"]}";
-					textGlobal=textToSave;
-				}
-				else
-				{
-					alert('no value');
-					textToSave ="CAUSE_EFFECT{\nWATCH=[REG("+watchReg+")] \nLABEL=["+label+"]nCAUSE: TARGET=[REG("+targetAddr+")] OP=["+operation+"] BIT=["+bitNumber+"]}";
-					textGlobal=textToSave;
-				}
-			}
+		function saveTextAsFile() {
+			var textToSave = textGlobal;			
 			textToSave = textToSave.replace(/\n/g, "\r\n");
-			var textToSaveAsBlob = new Blob([textToSave], {type:"text/plain"});
+			var textToSaveAsBlob = new Blob([textToSave], { type: "text/plain" });
 			var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
 			var fileNameToSaveAs = document.getElementById("inputFileNameToSaveAs").value;
 
@@ -160,175 +139,158 @@
 			downloadLink.style.display = "none";
 			document.body.appendChild(downloadLink);
 			downloadLink.click();
+			textGlobal="";
 		}
-		function destroyClickedElement(event)
-		{
+		function destroyClickedElement(event) {
 			document.body.removeChild(event.target);
 		}
-		function resetAllFields()
-		{
+		function resetAllFields() {
 			generateCodeOnload();
 		}
-		function resetSelectFields()
-		{
-			document.getElementById("watchReg").value="";
-			document.getElementById("label").value="";
-			document.getElementById("cause").value="-1";       
-			document.getElementById("targetAddr").value="";
-
-			document.getElementById("operation").value="-1";
-			document.getElementById("bitNumber").value="";
-
-			document.getElementById("effects").value="-1";
-
-			document.getElementById("targetEffectAddr").value="";
-			document.getElementById("operationEffect").value="-1";
-
-			document.getElementById("bitNumberEffect").value="";
-			
-			document.getElementById("causeDiv").style.display="none";
-			document.getElementById("effectDiv").style.display="none";
-
+		function addCause(that) {
+			var lastCount = $(that).parent().parent().find('.dropdown-parent-cause').last().data().count;
+			addDiv('causeDiv', `<label>Target Address</label><input type = "text" class ="targetAddr" style="margin-left:5px"/><div class="dropdown-cause-operation" style="margin-left:3px">Operation: <select id="operation"><option value="-1">Select One</option><option value="AND">AND</option><option value="OR">OR</option><option value="EQUALTO">EQUALTO</option><option value="BIT_ON">BIT_ON</option><option value="ALLONES">ALLONES</option><option value="ALLZEROS">ALLZEROS</option></select></div><label style="margin-left:2px">BIT Number</label><input type = "text" class ="bitNumber" style="margin-left:6px"/><input type="button" onclick="addCause(this)" value="Add Another Cause" style="margin-left:5px"/><input type="button" onclick="removeCause(this)" value="Remove Cause" style="margin-left:6px"/>`, {
+				'class': 'dropdown-parent-cause',
+				'data-attr': 'attr',
+				'data-count': lastCount+1,
+				'id':'causeDiv'+(lastCount+1)
+			});
 		}
-		function addCause(that)
-		{
-			console.log($(that).data().count);				
-			addDiv('causeDiv', '<div id="causeDiv" class="dropdown-parent"><label>Target Address</label><input type = "text" id ="targetAddr" style="margin-left:5px"/><div class="dropdown" style="margin-left:3px">Operation: <select id="operation"><option value="-1">Select One</option><option value="AND">AND</option><option value="OR">OR</option><option value="EQUALTO">EQUALTO</option><option value="BIT_ON">BIT_ON</option><option value="ALLONES">ALLONES</option><option value="ALLZEROS">ALLZEROS</option></select></div><label style="margin-left:2px">BIT Number</label><input type = "text" id ="bitNumber" style="margin-left:6px"/><input type="button" onclick="addCause()" value="Add Another Cause" style="margin-left:5px"/><input type="button" onclick="removeCause()" value="Remove Cause" style="margin-left:6px"/></div>', {
-					'class': 'dropdown-parent',
-					'data-attr': 'attr'
-				    });
-			//$(this).prev('li').prop('id', 'newId');	
+		function addEffect(that) {
+			var lastCount = $(that).parent().parent().find('.dropdown-parent-effect').last().data().count;
+			addDiv('effectDiv', `<label>Target Address</label><input type = "text" class ="targetEffectAddr" style="margin-left:5px"/><div class="dropdown-effect-operation" style="margin-left:3px">Operation: <select id="operationEffect"><option value="-1">Select One</option><option value="AND">AND</option><option value="OR">OR</option><option value="EQUALTO">EQUALTO</option><option value="BIT_ON">BIT_ON</option><option value="ALLONES">ALLONES</option><option value="ALLZEROS">ALLZEROS</option></select></div><label style="margin-left:2px">BIT Number</label><input type = "text" class ="bitNumberEffect" style="margin-left:6px"/><input type="button" onclick="addEffect(this)" value="Add Another Effect" style="margin-left:5px"/><input type="button" onclick="removeEffect(this)" value="Remove Effect" style="margin-left:6px"/>`, {
+				'class': 'dropdown-parent-effect',
+				'data-attr': 'attr',
+				'data-count': lastCount+1,
+				'id':'effectDiv'+(lastCount+1)
+			});
 		}
-		function addEffect()
-		{
-			j++;
-			addDiv('effectDiv', '<div id="effectDiv" class="dropdown-parent"><label>Target Address</label><input type = "text" id ="targetEffectAddr" style="margin-left:5px"/><div class="dropdown" style="margin-left:3px">Operation: <select id="operationEffect"><option value="-1">Select One</option><option value="AND">AND</option><option value="OR">OR</option><option value="EQUALTO">EQUALTO</option><option value="BIT_ON">BIT_ON</option><option value="ALLONES">ALLONES</option><option value="ALLZEROS">ALLZEROS</option></select></div><label style="margin-left:2px">BIT Number</label><input type = "text" id ="bitNumberEffect" style="margin-left:6px"/><input type="button" onclick="addEffect()" value="Add Another Effect" style="margin-left:5px"/><input type="button" onclick="removeEffect()" value="Remove Effect" style="margin-left:6px"/></div>', {
-					'class': 'dropdown-parent',
-					'data-attr': 'attr'
-				    });
+		function removeCause(that) {
+			$(that).closest('.dropdown-parent-cause').remove();
 		}
-		function removeCause()
-		{
-			$(this).closest("#causeDiv").remove();
+		function removeEffect(that) {
+			$(that).closest('.dropdown-parent-effect').remove();
 		}
-		function removeEffect()
-		{
-			$(this).closest("#effectDiv").remove();
-		}
-		function addDiv(parent_div, content, attrs) 
-		{
-		  var div = document.createElement('div');
-		  var parent = document.getElementById(parent_div);
+		function addDiv(parent_div, content, attrs) {
+			var div = document.createElement('div');
+			var parent = document.getElementById(parent_div);
 
-		  for (var key in attrs) {
-			if (attrs.hasOwnProperty(key)) {
-			  div.setAttribute(key, attrs[key]);
+			for (var key in attrs) {
+				if (attrs.hasOwnProperty(key)) {
+					div.setAttribute(key, attrs[key]);
+				}
 			}
-		  }
-		  div.innerHTML = content;
-		  if (parent) {
-			parent.appendChild(div);
+			div.innerHTML = content;
+			if (parent) {
+				parent.appendChild(div);
+			}
 		}
-}
-		</script>
+	</script>
 
-		<div id="navigation">
-			<center><h1>Dynamic Code Generator</h1></center>
-				<div class="dropdown-parent">
-					<label>Watch Reg</label>
-					<input type = "text" id ="watchReg"/>
-					<label style="margin-left:275px">Label</label>
-					<input type = "text" id ="label"/>
-				</div>
-				<div class="dropdown" style="margin-left:-15px">
-					Do you want to select the Causes: 
-					<select id="cause" onchange="showCauseDiv()">
-						<option value="-1">Select One</option>
-						<option value="yes">Yes</option>
-						<option value="no">No</option>
-					</select>
-				</div>
-				<div id="causeDiv" class="dropdown-parent">
-					<label>Target Address</label>
-					<input type = "text" id ="targetAddr"/>
-					<div class="dropdown">
-						Operation: 
-						<select id="operation">
-							<option value="-1">Select One</option>
-							<option value="AND">AND</option>
-							<option value="OR">OR</option>
-							<option value="EQUALTO">EQUALTO</option>
-							<option value="BIT_ON">BIT_ON</option>
-							<option value="ALLONES">ALLONES</option>
-							<option value="ALLZEROS">ALLZEROS</option>
-						</select>
-					</div>
-					<label>BIT Number</label>
-					<input type = "text" id ="bitNumber"/>
-					<input data-count="1" type="button" onclick="addCause(this)" value="Add Another Cause" />
-				</div>
-				<div style="margin-left:1px">
-					Do you want to select the Effects: 
-					<select id="effects" onchange="showEffectDiv()">
-						<option value="-1">Select One</option>
-						<option value="yes">Yes</option>
-						<option value="no">No</option>
-					</select>
-				</div>
-				<div id="effectDiv" class="dropdown-parent">
-						<label>Target Address</label>
-						<input type = "text" id ="targetEffectAddr"/>
-					<div class="dropdown">
-						Operation: 
-						<select id="operationEffect">
-							<option value="-1">Select One</option>
-							<option value="AND">AND</option>
-							<option value="OR">OR</option>
-							<option value="EQUALTO">EQUALTO</option>
-							<option value="BIT_ON">BIT_ON</option>
-							<option value="ALLONES">ALLONES</option>
-							<option value="ALLZEROS">ALLZEROS</option>
-						</select>
-					</div>
-					<label>BIT Number</label>
-					<input type = "text" id ="bitNumberEffect"/>
-					<input type="button" onclick="addEffect()" value="Add Another Effect" />
-				</div>
-				<div id="previewAction">
-					<textarea id="prevAction" rows="4" cols="50" readonly style="margin-left: 326px;margin-top: 29px;"></textarea>
-				</div>
-				<br>
-				<br>
-				<div>
-					<tr class="dropdown-parent">
-						<td>
-							<button onclick="previewAct()" style="margin-left:390px">Preview Action</button>
-						</td>
-						<td>
-							<button onclick="hidePreviewAct()">Hide Preview</button>
-						</td>
-						</tr>
-						<br>
-						<br>
-				</div>
-				<div style="margin-left:262px">
-					<tr>
-						<td>Filename to Save As:</td>
-						<td>
-							<input id="inputFileNameToSaveAs"></input>
-						</td>
-						<td>
-							<button onclick="saveTextAsFile()">Generate Action File</button>
-						</td>
-					</tr>
-				</div>
-				<div style="margin-left:-89px">
-					<br>
-					<br>
-					<button onclick="resetAllFields()" style="margin-left:534px">Reset</button>
-					<button onclick="resetSelectFields()">Add More</button>
-				</div>
+	<div id="navigation">
+		<center>
+			<h1>Dynamic Code Generator</h1>
+		</center>
+		<div class="dropdown-parent">
+			<label>Watch Reg</label>
+			<input type="text" id="watchReg" />
+			<label style="margin-left:275px">Label</label>
+			<input type="text" id="label" />
 		</div>
-	</body>
-</html>
+		<div class="dropdown" style="margin-left:-15px">
+			Do you want to select the Causes:
+			<select id="cause" onchange="showCauseDiv()">
+				<option value="-1">Select One</option>
+				<option value="yes">Yes</option>
+				<option value="no">No</option>
+			</select>
+		</div>
+		<div id="causeDiv">
+			<div class="dropdown-parent-cause" data-count=1>
+				<label>Target Address</label>
+				<input type="text" class="targetAddr" />
+				<div class="dropdown-cause-operation">
+					Operation:
+					<select id="operation">
+						<option value="-1">Select One</option>
+						<option value="AND">AND</option>
+						<option value="OR">OR</option>
+						<option value="EQUALTO">EQUALTO</option>
+						<option value="BIT_ON">BIT_ON</option>
+						<option value="ALLONES">ALLONES</option>
+						<option value="ALLZEROS">ALLZEROS</option>
+					</select>
+				</div>
+				<label>BIT Number</label>
+				<input type="text" class="bitNumber" />
+				<input data-count="1" type="button" onclick="addCause(this)" value="Add Another Cause" />
+			</div>
+		</div>
 
+		<div style="margin-left:1px">
+			Do you want to select the Effects:
+			<select id="effects" onchange="showEffectDiv()">
+				<option value="-1">Select One</option>
+				<option value="yes">Yes</option>
+				<option value="no">No</option>
+			</select>
+		</div>
+		<div id="effectDiv">
+			<div class="dropdown-parent-effect" data-count=1>
+				<label>Target Address</label>
+				<input type="text" class="targetEffectAddr" />
+				<div class="dropdown-effect-operation">
+					Operation:
+					<select id="operationEffect">
+						<option value="-1">Select One</option>
+						<option value="AND">AND</option>
+						<option value="OR">OR</option>
+						<option value="EQUALTO">EQUALTO</option>
+						<option value="BIT_ON">BIT_ON</option>
+						<option value="ALLONES">ALLONES</option>
+						<option value="ALLZEROS">ALLZEROS</option>
+					</select>
+				</div>
+				<label>BIT Number</label>
+				<input type="text" class="bitNumberEffect" />
+				<input type="button" onclick="addEffect(this)" value="Add Another Effect" />
+			</div>
+		</div>
+
+		<div id="previewAction">
+			<textarea id="prevAction" rows="4" cols="50" readonly style="margin-left: 326px;margin-top: 29px;"></textarea>
+		</div>
+		<br>
+		<br>
+		<div>
+			<tr class="dropdown-parent">
+				<td>
+					<button onclick="previewAct()" style="margin-left:390px">Preview Action</button>
+				</td>
+				<td>
+					<button onclick="hidePreviewAct()">Hide Preview</button>
+				</td>
+			</tr>
+			<br>
+			<br>
+		</div>
+		<div style="margin-left:262px">
+			<tr>
+				<td>Filename to Save As:</td>
+				<td>
+					<input id="inputFileNameToSaveAs"></input>
+				</td>
+				<td>
+					<button onclick="saveTextAsFile()">Generate Action File</button>
+				</td>
+			</tr>
+		</div>
+		<div style="margin-left:-89px">
+			<br>
+			<br>
+			<button onclick="resetAllFields()" style="margin-left:534px">Reset</button>
+		</div>
+	</div>
+</body>
+
+</html>
