@@ -26,9 +26,23 @@
 			document.getElementById("operationEffect").value = "-1";
 			document.getElementsByName("bitNumberEffect").value = "";
 			document.getElementById("inputFileNameToSaveAs").value = "";
+
+			$(".bitNumber").hide();
+			$(".bitNumCause").hide();
+			$(".box1").hide();
+			$(".box1Cause").hide();
+			$(".box2").hide();
+			$(".box2Cause").hide();
+
+			$(".bitNumEffect").hide();
+			$(".bitNumberEffect").hide();
+			$(".box1Eff").hide();
+			$(".box1effect").hide();
+			$(".box2Eff").hide();
+			$(".box2effect").hide();
 			
-			$('#operation').prop('selectedIndex',-1);
-			$('#operationEffect').prop('selectedIndex',-1);
+			$('#operation').prop('selectedIndex',0);
+			$('#operationEffect').prop('selectedIndex',0);
 			
 			$('.dropdown-parent-cause input[type="text"]').val('');
 			$('.dropdown-parent-effect input[type="text"]').val('');
@@ -68,8 +82,14 @@
 					//get values
 					var text1 = $(this).find('.targetAddr').val();
 					var text2 = $(this).find('#operation').val();
-					var text3 = $(this).find('.bitNumber').val();
-					causeDiv_values += '|'+ text1 +','+ text2 +','+ text3;
+					if(text2=='AND' || text2=='OR'){
+						var text3 = $(this).find('.bitNumber').val();
+						causeDiv_values += '|'+ text1 +','+ text2 +','+ text3;
+					}else{
+						var text3 = $(this).find('.box1').val();
+						var text4 = $(this).find('.box2').val();
+						causeDiv_values += '|'+ text1 +','+ text2 +','+ text3+','+text4;
+					}
 				});
 			var count=(causeDiv_values.split("|").length - 1);
 			var cause_arr;
@@ -78,11 +98,25 @@
 				var cause_arr_val=cause_arr[i].split(",");
 				var addr=cause_arr_val[0];
 				var operation=cause_arr_val[1];
-				var bitNumber=cause_arr_val[2];
+				if(operation=='AND' || operation=='OR'){
+					var bitNumber=cause_arr_val[2];
+				}
+				else{
+					var box1=cause_arr_val[2];
+					var box2=cause_arr_val[3];
+				}
 				if(causeText==""){
-					causeText="CAUSE_EFFECT{\nWATCH=[REG(" + watchReg + ")] \nLABEL=[" + label + "] \nCAUSE: TARGET=[REG(" + addr + ")] OP=[" + operation + "] BIT=[" + bitNumber + "]";
+					if(operation=='AND' || operation=='OR'){
+						causeText="CAUSE_EFFECT{\nWATCH=[REG(" + watchReg + ")] \nLABEL=[" + label + "] \nCAUSE: TARGET=[REG(" + addr + ")] OP=[" + operation + "] BIT=[" + bitNumber + "]";
+					}else{
+						causeText="CAUSE_EFFECT{\nWATCH=[REG(" + watchReg + ")] \nLABEL=[" + label + "] \nCAUSE: TARGET=[REG(" + addr + ")] OP=[" + operation + "] BOX1=[" + box1 + "] BOX2=[" + box2 + "]";
+					}
 				}else{
-					causeText=causeText+"\nCAUSE: TARGET=[REG(" + addr + ")] OP=[" + operation + "] BIT=[" + bitNumber + "]";
+					if(operation=='AND' || operation=='OR'){
+						causeText=causeText+"\nCAUSE: TARGET=[REG(" + addr + ")] OP=[" + operation + "] BIT=[" + bitNumber + "]";
+					}else{
+						causeText=causeText+"\nCAUSE: TARGET=[REG(" + addr + ")] OP=[" + operation + "] BOX1=[" + box1 + "] BOX2=[" + box2 + "]";
+					}					
 				}
 			}
 			if (cause == 'yes' && effects == 'yes') {
@@ -92,8 +126,14 @@
 						//get values
 						var text1 = $(this).find('.targetEffectAddr').val();
 						var text2 = $(this).find('#operationEffect').val();
-						var text3 = $(this).find('.bitNumberEffect').val();
-						effectDiv_values += '|'+ text1 +','+ text2 +','+ text3;
+						if(text2=='AND' || text2=='OR'){
+							var text3 = $(this).find('.bitNumberEffect').val();
+							effectDiv_values += '|'+ text1 +','+ text2 +','+ text3;
+						}else{
+							var text3 = $(this).find('.box1effect').val();
+							var text4 = $(this).find('.box2effect').val();
+							effectDiv_values += '|'+ text1 +','+ text2 +','+ text3+','+text4;
+						}						
 					});
 				var count_eff=(effectDiv_values.split("|").length - 1);
 				var effect_arr;
@@ -102,13 +142,26 @@
 					var effect_arr_val=effect_arr[i].split(",");
 					var addrEff=effect_arr_val[0];
 					var operationEff=effect_arr_val[1];
-					var bitNumberEff=effect_arr_val[2];
+					if(operationEff=='AND' || operationEff=='OR'){
+						var bitNumberEff=effect_arr_val[2];
+					}else{
+						var box1eff=effect_arr_val[2];
+						var box2eff=effect_arr_val[3];
+					}					
 					if(effectText==""){
-						effectText="\nEFFECT: TARGET=[REG(" + addrEff + ")] OP=[" + operationEff + "] BIT=[" + bitNumberEff + "]";
+						if(operationEff=='AND' || operationEff=='OR'){
+							effectText="\nEFFECT: TARGET=[REG(" + addrEff + ")] OP=[" + operationEff + "] BIT=[" + bitNumberEff + "]";
+						}else{
+							effectText="\nEFFECT: TARGET=[REG(" + addrEff + ")] OP=[" + operationEff + "] BOX1=[" + box1eff + "] BOX2=[" + box2eff + "]";
+						}						
 					}
 					else{
-						effectText=effectText+"\nEFFECT: TARGET=[REG(" + addrEff + ")] OP=[" + operationEff + "] BIT=[" + bitNumberEff + "]";
-					}
+						if(operationEff=='AND' || operationEff=='OR'){
+							effectText=effectText+"\nEFFECT: TARGET=[REG(" + addrEff + ")] OP=[" + operationEff + "] BIT=[" + bitNumberEff + "]";
+					}else{
+						   effectText=effectText+"\nEFFECT: TARGET=[REG(" + addrEff + ")] OP=[" + operationEff + "] BOX1=[" + box1eff + "] BOX2=[" + box2eff + "]";
+					    }						
+				    }
 				}
 				effectText=effectText+"}";
 				textToSave=causeText+effectText;
@@ -147,23 +200,38 @@
 		function resetAllFields() {
 			generateCodeOnload();
 		}
+
 		function addCause(that) {
 			var lastCount = $(that).parent().parent().find('.dropdown-parent-cause').last().data().count;
-			addDiv('causeDiv', `<label>Target Address</label><input type = "text" class ="targetAddr" style="margin-left:5px"/><div class="dropdown-cause-operation" style="margin-left:3px">Operation: <select id="operation"><option value="-1">Select One</option><option value="AND">AND</option><option value="OR">OR</option><option value="EQUALTO">EQUALTO</option><option value="BIT_ON">BIT_ON</option><option value="ALLONES">ALLONES</option><option value="ALLZEROS">ALLZEROS</option></select></div><label style="margin-left:2px">BIT Number</label><input type = "text" class ="bitNumber" style="margin-left:6px"/><input type="button" onclick="addCause(this)" value="Add Another Cause" style="margin-left:5px"/><input type="button" onclick="removeCause(this)" value="Remove Cause" style="margin-left:6px"/>`, {
+			addDiv('causeDiv', `<label>Target Address</label><input type = "text" class ="targetAddr" style="margin-left:5px"/><div class="dropdown-cause-operation" style="margin-left:3px">Operation: <select id="operation" onchange="showProperTextBox(this)"><option value="-1">Select One</option><option value="AND">AND</option><option value="OR">OR</option><option value="EQUALTO">EQUALTO</option><option value="BIT_ON">BIT_ON</option><option value="ALLONES">ALLONES</option><option value="ALLZEROS">ALLZEROS</option></select></div><label style="margin-left:2px" class="bitNumCause">BIT Number</label><input type = "text" class ="bitNumber" style="margin-left:6px"/><label style="margin-left:2px" class="box1Cause">Box 1</label><input type = "text" class ="box1" style="margin-left:6px"/><label style="margin-left:2px" class="box2Cause">Box 2</label><input type = "text" class ="box2" style="margin-left:6px"/><input type="button" onclick="addCause(this)" value="Add" style="margin-left:5px"/><input type="button" onclick="removeCause(this)" value="Remove" style="margin-left:6px"/>`, {
 				'class': 'dropdown-parent-cause',
 				'data-attr': 'attr',
 				'data-count': lastCount+1,
 				'id':'causeDiv'+(lastCount+1)
 			});
+			var divid='causeDiv'+(lastCount+1);
+			$("#"+divid+" .bitNumber").hide();
+			$("#"+divid+" .bitNumCause").hide();
+			$("#"+divid+" .box1").hide();
+			$("#"+divid+" .box1Cause").hide();
+			$("#"+divid+" .box2").hide();
+			$("#"+divid+" .box2Cause").hide();
 		}
 		function addEffect(that) {
 			var lastCount = $(that).parent().parent().find('.dropdown-parent-effect').last().data().count;
-			addDiv('effectDiv', `<label>Target Address</label><input type = "text" class ="targetEffectAddr" style="margin-left:5px"/><div class="dropdown-effect-operation" style="margin-left:3px">Operation: <select id="operationEffect"><option value="-1">Select One</option><option value="AND">AND</option><option value="OR">OR</option><option value="EQUALTO">EQUALTO</option><option value="BIT_ON">BIT_ON</option><option value="ALLONES">ALLONES</option><option value="ALLZEROS">ALLZEROS</option></select></div><label style="margin-left:2px">BIT Number</label><input type = "text" class ="bitNumberEffect" style="margin-left:6px"/><input type="button" onclick="addEffect(this)" value="Add Another Effect" style="margin-left:5px"/><input type="button" onclick="removeEffect(this)" value="Remove Effect" style="margin-left:6px"/>`, {
+			addDiv('effectDiv', `<label>Target Address</label><input type = "text" class ="targetEffectAddr" style="margin-left:5px"/><div class="dropdown-effect-operation" style="margin-left:3px">Operation: <select id="operationEffect" onchange="showProperTextBoxEffect(this)"><option value="-1">Select One</option><option value="AND">AND</option><option value="OR">OR</option><option value="EQUALTO">EQUALTO</option><option value="BIT_ON">BIT_ON</option><option value="ALLONES">ALLONES</option><option value="ALLZEROS">ALLZEROS</option></select></div><label style="margin-left:2px" class="bitNumEffect">BIT Number</label><input type = "text" class ="bitNumberEffect" style="margin-left:6px"/><label style="margin-left:2px" class="box1Eff">Box 1</label><input type = "text" class ="box1effect" style="margin-left:6px"/><label style="margin-left:2px" class="box2Eff">Box 2</label><input type = "text" class ="box2effect" style="margin-left:6px"/><input type="button" onclick="addEffect(this)" value="Add" style="margin-left:5px"/><input type="button" onclick="removeEffect(this)" value="Remove" style="margin-left:6px"/>`, {
 				'class': 'dropdown-parent-effect',
 				'data-attr': 'attr',
 				'data-count': lastCount+1,
 				'id':'effectDiv'+(lastCount+1)
 			});
+			var divid='effectDiv'+(lastCount+1);
+			$("#"+divid+" .bitNumEffect").hide();
+			$("#"+divid+" .bitNumberEffect").hide();
+			$("#"+divid+" .box1Eff").hide();
+			$("#"+divid+" .box1effect").hide();
+			$("#"+divid+" .box2Eff").hide();
+			$("#"+divid+" .box2effect").hide();
 		}
 		function removeCause(that) {
 			$(that).closest('.dropdown-parent-cause').remove();
@@ -183,6 +251,61 @@
 			div.innerHTML = content;
 			if (parent) {
 				parent.appendChild(div);
+			}
+		}
+
+		function showProperTextBox(that){
+			var divid=$(that).parents(':eq(1)').attr("id");
+			var dd_val=$(that).val();
+
+			if(dd_val=='AND'|| dd_val=='OR'){
+				$("#"+divid+" .bitNumber").show();
+				$("#"+divid+" .bitNumCause").show();
+				$("#"+divid+" .box1").hide();
+				$("#"+divid+" .box1Cause").hide();
+				$("#"+divid+" .box2").hide();
+				$("#"+divid+" .box2Cause").hide();
+			}else if(dd_val!='AND' && dd_val!='OR' && dd_val!='-1'){
+				$("#"+divid+" .bitNumber").hide();
+				$("#"+divid+" .bitNumCause").hide();
+				$("#"+divid+" .box1").show();
+				$("#"+divid+" .box1Cause").show();
+				$("#"+divid+" .box2").show();
+				$("#"+divid+" .box2Cause").show();
+			}else if(dd_val=='-1'){
+				$("#"+divid+" .bitNumber").hide();
+				$("#"+divid+" .bitNumCause").hide();
+				$("#"+divid+" .box1").hide();
+				$("#"+divid+" .box1Cause").hide();
+				$("#"+divid+" .box2").hide();
+				$("#"+divid+" .box2Cause").hide();
+			}
+		}
+		function showProperTextBoxEffect(that){
+			var divid=$(that).parents(':eq(1)').attr("id");
+			var dd_val=$(that).val();
+
+			if(dd_val=='AND'|| dd_val=='OR'){
+				$("#"+divid+" .bitNumEffect").show();
+				$("#"+divid+" .bitNumberEffect").show();
+				$("#"+divid+" .box1Eff").hide();
+				$("#"+divid+" .box1effect").hide();
+				$("#"+divid+" .box2Eff").hide();
+				$("#"+divid+" .box2effect").hide();
+			}else if(dd_val!='AND' && dd_val!='OR' && dd_val!='-1'){
+				$("#"+divid+" .bitNumEffect").hide();
+				$("#"+divid+" .bitNumberEffect").hide();
+				$("#"+divid+" .box1Eff").show();
+				$("#"+divid+" .box1effect").show();
+				$("#"+divid+" .box2Eff").show();
+				$("#"+divid+" .box2effect").show();
+			}else if(dd_val=='-1'){
+				$("#"+divid+" .bitNumEffect").hide();
+				$("#"+divid+" .bitNumberEffect").hide();
+				$("#"+divid+" .box1Eff").hide();
+				$("#"+divid+" .box1effect").hide();
+				$("#"+divid+" .box2Eff").hide();
+				$("#"+divid+" .box2effect").hide();
 			}
 		}
 	</script>
@@ -206,12 +329,12 @@
 			</select>
 		</div>
 		<div id="causeDiv">
-			<div class="dropdown-parent-cause" data-count=1>
+			<div class="dropdown-parent-cause" data-count=1 id="causeDiv">
 				<label>Target Address</label>
 				<input type="text" class="targetAddr" />
 				<div class="dropdown-cause-operation">
 					Operation:
-					<select id="operation">
+					<select id="operation" onchange="showProperTextBox(this)">
 						<option value="-1">Select One</option>
 						<option value="AND">AND</option>
 						<option value="OR">OR</option>
@@ -221,9 +344,16 @@
 						<option value="ALLZEROS">ALLZEROS</option>
 					</select>
 				</div>
-				<label>BIT Number</label>
+				<label class="bitNumCause">BIT Number</label>
 				<input type="text" class="bitNumber" />
-				<input data-count="1" type="button" onclick="addCause(this)" value="Add Another Cause" />
+				
+				<label class="box1Cause">Box 1</label>
+				<input type="text" class="box1" />
+
+				<label class="box2Cause">Box 2</label>
+				<input type="text" class="box2" />
+
+				<input data-count="1" type="button" onclick="addCause(this)" value="Add" />
 			</div>
 		</div>
 
@@ -236,12 +366,12 @@
 			</select>
 		</div>
 		<div id="effectDiv">
-			<div class="dropdown-parent-effect" data-count=1>
+			<div class="dropdown-parent-effect" data-count=1 id="effectDiv">
 				<label>Target Address</label>
 				<input type="text" class="targetEffectAddr" />
 				<div class="dropdown-effect-operation">
 					Operation:
-					<select id="operationEffect">
+					<select id="operationEffect" onchange="showProperTextBoxEffect(this)">
 						<option value="-1">Select One</option>
 						<option value="AND">AND</option>
 						<option value="OR">OR</option>
@@ -251,9 +381,16 @@
 						<option value="ALLZEROS">ALLZEROS</option>
 					</select>
 				</div>
-				<label>BIT Number</label>
+				<label class="bitNumEffect">BIT Number</label>
 				<input type="text" class="bitNumberEffect" />
-				<input type="button" onclick="addEffect(this)" value="Add Another Effect" />
+				
+				<label class="box1Eff">Box 1</label>
+				<input type="text" class="box1effect" />
+
+				<label class="box2Eff">Box 2</label>
+				<input type="text" class="box2effect" />
+
+				<input type="button" onclick="addEffect(this)" value="Add" />
 			</div>
 		</div>
 
