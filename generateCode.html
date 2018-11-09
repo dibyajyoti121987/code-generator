@@ -203,7 +203,7 @@
 
 		function addCause(that) {
 			var lastCount = $(that).parent().parent().find('.dropdown-parent-cause').last().data().count;
-			addDiv('causeDiv', `<label>Target Address</label><input type = "text" class ="targetAddr" style="margin-left:5px"/><div class="dropdown-cause-operation" style="margin-left:3px">Operation: <select id="operation" onchange="showProperTextBox(this)"><option value="-1">Select One</option><option value="AND">AND</option><option value="OR">OR</option><option value="EQUALTO">EQUALTO</option><option value="BIT_ON">BIT_ON</option><option value="ALLONES">ALLONES</option><option value="ALLZEROS">ALLZEROS</option></select></div><label style="margin-left:2px" class="bitNumCause">BIT Number</label><input type = "text" class ="bitNumber" style="margin-left:6px"/><label style="margin-left:2px" class="box1Cause">Box 1</label><input type = "text" class ="box1" style="margin-left:6px"/><label style="margin-left:2px" class="box2Cause">Box 2</label><input type = "text" class ="box2" style="margin-left:6px"/><input type="button" onclick="addCause(this)" value="Add" style="margin-left:5px"/><input type="button" onclick="removeCause(this)" value="Remove" style="margin-left:6px"/>`, {
+			addDiv('causeDiv', `<label>Target Address</label><input type = "text" class ="targetAddr" style="margin-left:5px" onblur="isValidhexTargetAddressCause(this)"/><div class="dropdown-cause-operation" style="margin-left:3px">Operation: <select id="operation" onchange="showProperTextBox(this)"><option value="-1">Select One</option><option value="AND">AND</option><option value="OR">OR</option><option value="EQUALTO">EQUALTO</option><option value="BIT_ON">BIT_ON</option><option value="ALLONES">ALLONES</option><option value="ALLZEROS">ALLZEROS</option></select></div><label style="margin-left:2px" class="bitNumCause">BIT Number</label><input type = "text" class ="bitNumber" style="margin-left:6px" onkeypress="return isNumber(event)"/><label style="margin-left:2px" class="box1Cause">Box 1</label><input type = "text" class ="box1" style="margin-left:6px"/><label style="margin-left:2px" class="box2Cause">Box 2</label><input type = "text" class ="box2" style="margin-left:6px"/><input type="button" onclick="addCause(this)" value="Add" style="margin-left:5px"/><input type="button" onclick="removeCause(this)" value="Remove" style="margin-left:6px"/>`, {
 				'class': 'dropdown-parent-cause',
 				'data-attr': 'attr',
 				'data-count': lastCount+1,
@@ -219,7 +219,7 @@
 		}
 		function addEffect(that) {
 			var lastCount = $(that).parent().parent().find('.dropdown-parent-effect').last().data().count;
-			addDiv('effectDiv', `<label>Target Address</label><input type = "text" class ="targetEffectAddr" style="margin-left:5px"/><div class="dropdown-effect-operation" style="margin-left:3px">Operation: <select id="operationEffect" onchange="showProperTextBoxEffect(this)"><option value="-1">Select One</option><option value="AND">AND</option><option value="OR">OR</option><option value="EQUALTO">EQUALTO</option><option value="BIT_ON">BIT_ON</option><option value="ALLONES">ALLONES</option><option value="ALLZEROS">ALLZEROS</option></select></div><label style="margin-left:2px" class="bitNumEffect">BIT Number</label><input type = "text" class ="bitNumberEffect" style="margin-left:6px"/><label style="margin-left:2px" class="box1Eff">Box 1</label><input type = "text" class ="box1effect" style="margin-left:6px"/><label style="margin-left:2px" class="box2Eff">Box 2</label><input type = "text" class ="box2effect" style="margin-left:6px"/><input type="button" onclick="addEffect(this)" value="Add" style="margin-left:5px"/><input type="button" onclick="removeEffect(this)" value="Remove" style="margin-left:6px"/>`, {
+			addDiv('effectDiv', `<label>Target Address</label><input type = "text" class ="targetEffectAddr" style="margin-left:5px" onblur="isValidhexTargetAddressEffect(this)"/><div class="dropdown-effect-operation" style="margin-left:3px">Operation: <select id="operationEffect" onchange="showProperTextBoxEffect(this)"><option value="-1">Select One</option><option value="AND">AND</option><option value="OR">OR</option><option value="EQUALTO">EQUALTO</option><option value="BIT_ON">BIT_ON</option><option value="ALLONES">ALLONES</option><option value="ALLZEROS">ALLZEROS</option></select></div><label style="margin-left:2px" class="bitNumEffect">BIT Number</label><input type = "text" class ="bitNumberEffect" style="margin-left:6px" onkeypress="return isNumber(event)"/><label style="margin-left:2px" class="box1Eff">Box 1</label><input type = "text" class ="box1effect" style="margin-left:6px"/><label style="margin-left:2px" class="box2Eff">Box 2</label><input type = "text" class ="box2effect" style="margin-left:6px"/><input type="button" onclick="addEffect(this)" value="Add" style="margin-left:5px"/><input type="button" onclick="removeEffect(this)" value="Remove" style="margin-left:6px"/>`, {
 				'class': 'dropdown-parent-effect',
 				'data-attr': 'attr',
 				'data-count': lastCount+1,
@@ -308,6 +308,53 @@
 				$("#"+divid+" .box2effect").hide();
 			}
 		}
+		//To test Hex Values in Watch Reg
+		function isValidhex(ele)
+		{
+			var regExp = new RegExp(/^0x[0-9A-F]{1,4}$/i);
+			if (!regExp.test(ele.value)){
+				alert("Please enter valid value in Watch Reg");
+			}
+		}
+		//To test Hex Values in Target Address in Cause
+		function isValidhexTargetAddressCause(ele)
+		{
+			var regExp = new RegExp(/^0x[0-9A-F]{1,4}$/i);
+			if (!regExp.test(ele.value)){
+				alert("Please enter valid value in Target Address in Cause");
+			}
+		}
+		//To test Hex Values in Target Address in Effect
+		function isValidhexTargetAddressEffect(ele)
+		{
+			var regExp = new RegExp(/^0x[0-9A-F]{1,4}$/i);
+			if (!regExp.test(ele.value)){
+				alert("Please enter valid value in Target Address in Effect");
+			}
+		}
+		function isValidBinaryNumberCause(ele)
+		{
+			var regExp = new RegExp('^[0-9]{1,10}$');
+			if (!regExp.test(ele.value)){
+				alert("Please enter valid BIT Number in Cause");
+			}
+		}
+		function isValidBinaryNumberEffect(ele)
+		{
+			var regExp = new RegExp('^[0-9]{1,10}$');
+			if (!regExp.test(ele.value)){
+				alert("Please enter valid BIT Number in Effect");
+			}
+		}
+		function isNumber(evt) {
+			evt = (evt) ? evt : window.event;
+			var charCode = (evt.which) ? evt.which : evt.keyCode;
+			if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+				return false;
+			}
+			return true;
+		}
+
 	</script>
 
 	<div id="navigation">
@@ -316,7 +363,7 @@
 		</center>
 		<div class="dropdown-parent">
 			<label>Watch Reg</label>
-			<input type="text" id="watchReg" />
+			<input type="text" id="watchReg" onblur="isValidhex(this)"/>
 			<label style="margin-left:275px">Label</label>
 			<input type="text" id="label" />
 		</div>
@@ -331,7 +378,7 @@
 		<div id="causeDiv">
 			<div class="dropdown-parent-cause" data-count=1 id="causeDiv">
 				<label>Target Address</label>
-				<input type="text" class="targetAddr" />
+				<input type="text" class="targetAddr" onblur="isValidhexTargetAddressCause(this)"/>
 				<div class="dropdown-cause-operation">
 					Operation:
 					<select id="operation" onchange="showProperTextBox(this)">
@@ -345,7 +392,7 @@
 					</select>
 				</div>
 				<label class="bitNumCause">BIT Number</label>
-				<input type="text" class="bitNumber" />
+				<input type="text" class="bitNumber" onkeypress="return isNumber(event)"/>
 				
 				<label class="box1Cause">Box 1</label>
 				<input type="text" class="box1" />
@@ -368,7 +415,7 @@
 		<div id="effectDiv">
 			<div class="dropdown-parent-effect" data-count=1 id="effectDiv">
 				<label>Target Address</label>
-				<input type="text" class="targetEffectAddr" />
+				<input type="text" class="targetEffectAddr" onblur="isValidhexTargetAddressEffect(this)"/>
 				<div class="dropdown-effect-operation">
 					Operation:
 					<select id="operationEffect" onchange="showProperTextBoxEffect(this)">
@@ -382,7 +429,7 @@
 					</select>
 				</div>
 				<label class="bitNumEffect">BIT Number</label>
-				<input type="text" class="bitNumberEffect" />
+				<input type="text" class="bitNumberEffect" onkeypress="return isNumber(event)"/>
 				
 				<label class="box1Eff">Box 1</label>
 				<input type="text" class="box1effect" />
