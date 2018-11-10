@@ -11,7 +11,10 @@
 		var textGlobal = "";
 		var i = 0;
 		var j = 0;
-		function generateCodeOnload() {
+		var causeCount=0;
+		var effectCount=0;
+		var resetFlag="";
+		function generateCodeOnload(resetFlag) {
 			document.getElementById("causeDiv").style.display = "none";
 			document.getElementById("effectDiv").style.display = "none";
 			document.getElementById("previewAction").style.display = "none";
@@ -46,6 +49,22 @@
 			
 			$('.dropdown-parent-cause input[type="text"]').val('');
 			$('.dropdown-parent-effect input[type="text"]').val('');
+
+			// Removing newly added cause and effect rows
+			if(resetFlag=="Y"){
+				if(causeCount>0){
+					for(k=2;k<=causeCount;k++){
+						var divid='causeDiv'+k;
+						$("#"+divid).remove();
+					}
+				}
+				if(effectCount>0){
+					for(p=2;p<=causeCount;p++){
+						var divid='effectDiv'+p;
+						$("#"+divid).remove();
+					}
+				}
+			}
 		}
 		function showCauseDiv() {
 			//alert("inside cause div onchange");
@@ -198,7 +217,9 @@
 			document.body.removeChild(event.target);
 		}
 		function resetAllFields() {
-			generateCodeOnload();
+			var resetFlag="Y";
+			generateCodeOnload(resetFlag);
+			document.getElementById("prevAction").value='';
 		}
 
 		function addCause(that) {
@@ -216,6 +237,8 @@
 			$("#"+divid+" .box1Cause").hide();
 			$("#"+divid+" .box2").hide();
 			$("#"+divid+" .box2Cause").hide();
+
+			causeCount=lastCount+1;
 		}
 		function addEffect(that) {
 			var lastCount = $(that).parent().parent().find('.dropdown-parent-effect').last().data().count;
@@ -232,6 +255,8 @@
 			$("#"+divid+" .box1effect").hide();
 			$("#"+divid+" .box2Eff").hide();
 			$("#"+divid+" .box2effect").hide();
+
+			effectCount=lastCount+1;
 		}
 		function removeCause(that) {
 			$(that).closest('.dropdown-parent-cause').remove();
