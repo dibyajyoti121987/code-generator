@@ -29,6 +29,8 @@
 			document.getElementById("operationEffect").value = "-1";
 			document.getElementsByName("bitNumberEffect").value = "";
 			document.getElementById("inputFileNameToSaveAs").value = "";
+			document.getElementById("chiplet").value = "-1";
+			document.getElementById("addrChoice").value = "-1";
 
 			$(".bitNumber").hide();
 			$(".bitNumCause").hide();
@@ -85,16 +87,35 @@
 			}
 		}
 		function previewAct() {
-			// alert("inside show preview");
-			document.getElementById("previewAction").style.display = "block";
 			var causeText="";
 			var effectText="";
-			var textToSave = document.getElementById("prevAction").value;
-			var watchReg = document.getElementById("watchReg").value;
+			var textToSave = document.getElementById("prevAction").value;		
 			var label = document.getElementById("label").value;
 			var cause = document.getElementById("cause").value;
 			var effects = document.getElementById("effects").value;
+			var chiplet = document.getElementById("chiplet").value;
+			var addrChoice = document.getElementById("addrChoice").value;
+			var watchReg = document.getElementById("watchReg").value;
 
+			if(chiplet=='-1'){
+				alert("Please select if you want to apply for Chiplet or not");
+				return false;
+			}else if(label==''){
+				alert("Please provide label value");
+				return false;
+			}
+			else if(addrChoice=='-1'){
+				alert("Please select your choice of address");
+				return false;
+			}else if(watchReg==''){
+				alert("Please provide watch register address");
+				return false;
+			}
+			else if(cause=='-1' && effects=='-1'){
+				alert("Please select cause or effect");
+				return false;
+			}
+			document.getElementById("previewAction").style.display = "block";
 			// Get Cause Values
 			var causeDiv_values = '';
 				$('.dropdown-parent-cause').each(function() {
@@ -126,22 +147,53 @@
 				}
 				if(causeText==""){
 					if(operation=='AND' || operation=='OR'){
-						causeText="CAUSE_EFFECT{\nWATCH=[REG(" + watchReg + ")] \nLABEL=[" + label + "] \nCAUSE: TARGET=[REG(" + addr + ")] OP=[" + operation + "] BIT=[" + bitNumber + "]";
+						if(addrChoice!='-1' && addrChoice=='logic'){
+							causeText="CAUSE_EFFECT{\nWATCH=[REG(" + watchReg + ")] \nLABEL=[" + label + "] \nCAUSE: TARGET=[REG(" + addr + ")] OP=[" + operation + "] BIT=[" + bitNumber + "]";
+						}else if(addrChoice!='-1' && addrChoice=='reg'){
+							if(chiplet!='-1' && chiplet=='yes' ){
+								causeText="CAUSE_EFFECT{\nWATCH=[REG(MYCHIPLET," + watchReg + ")] \nLABEL=[" + label + "] \nCAUSE: TARGET=[REG(MYCHIPLET," + addr + ")] OP=[" + operation + "] BIT=[" + bitNumber + "]";
+							}else if(chiplet!='-1' && chiplet=='no'){
+								causeText="CAUSE_EFFECT{\nWATCH=[REG(" + watchReg + ")] \nLABEL=[" + label + "] \nCAUSE: TARGET=[REG(" + addr + ")] OP=[" + operation + "] BIT=[" + bitNumber + "]";
+							}
+						}						
 					}else{
-						causeText="CAUSE_EFFECT{\nWATCH=[REG(" + watchReg + ")] \nLABEL=[" + label + "] \nCAUSE: TARGET=[REG(" + addr + ")] OP=[" + operation + "] BOX1=[" + box1 + "] BOX2=[" + box2 + "]";
+						if(addrChoice!='-1' && addrChoice=='logic'){
+							causeText="CAUSE_EFFECT{\nWATCH=[REG(" + watchReg + ")] \nLABEL=[" + label + "] \nCAUSE: TARGET=[REG(" + addr + ")] OP=[" + operation + "] BOX1=[" + box1 + "] BOX2=[" + box2 + "]";
+						}else if(addrChoice!='-1' && addrChoice=='reg'){
+							if(chiplet!='-1' && chiplet=='yes' ){
+								causeText="CAUSE_EFFECT{\nWATCH=[REG(MYCHIPLET," + watchReg + ")] \nLABEL=[" + label + "] \nCAUSE: TARGET=[REG(MYCHIPLET," + addr + ")] OP=[" + operation + "] BOX1=[" + box1 + "] BOX2=[" + box2 + "]";
+							}else if(chiplet!='-1' && chiplet=='no'){
+								causeText="CAUSE_EFFECT{\nWATCH=[REG(" + watchReg + ")] \nLABEL=[" + label + "] \nCAUSE: TARGET=[REG(" + addr + ")] OP=[" + operation + "] BOX1=[" + box1 + "] BOX2=[" + box2 + "]";
+							}
+						}
 					}
 				}else{
 					if(operation=='AND' || operation=='OR'){
-						causeText=causeText+"\nCAUSE: TARGET=[REG(" + addr + ")] OP=[" + operation + "] BIT=[" + bitNumber + "]";
+						if(addrChoice!='-1' && addrChoice=='logic'){
+							causeText=causeText+"\nCAUSE: TARGET=[REG(" + addr + ")] OP=[" + operation + "] BIT=[" + bitNumber + "]";
+						}else if(addrChoice!='-1' && addrChoice=='reg'){
+							if(chiplet!='-1' && chiplet=='yes' ){
+								causeText=causeText+"\nCAUSE: TARGET=[REG(MYCHIPLET," + addr + ")] OP=[" + operation + "] BIT=[" + bitNumber + "]";
+							}else if(chiplet!='-1' && chiplet=='no'){
+								causeText=causeText+"\nCAUSE: TARGET=[REG(" + addr + ")] OP=[" + operation + "] BIT=[" + bitNumber + "]";
+							}
+						}
 					}else{
-						causeText=causeText+"\nCAUSE: TARGET=[REG(" + addr + ")] OP=[" + operation + "] BOX1=[" + box1 + "] BOX2=[" + box2 + "]";
+						if(addrChoice!='-1' && addrChoice=='logic'){
+							causeText=causeText+"\nCAUSE: TARGET=[REG(" + addr + ")] OP=[" + operation + "] BOX1=[" + box1 + "] BOX2=[" + box2 + "]";
+						}else if(addrChoice!='-1' && addrChoice=='reg'){
+							if(chiplet!='-1' && chiplet=='yes' ){
+								causeText=causeText+"\nCAUSE: TARGET=[REG(MYCHIPLET," + addr + ")] OP=[" + operation + "] BOX1=[" + box1 + "] BOX2=[" + box2 + "]";
+							}else if(chiplet!='-1' && chiplet=='no'){
+								causeText=causeText+"\nCAUSE: TARGET=[REG(" + addr + ")] OP=[" + operation + "] BOX1=[" + box1 + "] BOX2=[" + box2 + "]";
+							}
+						}
 					}					
 				}
 			}
-			if (cause == 'yes' && effects == 'yes') {
-				// Get Effect Div Values
-				var effectDiv_values = '';
-					$('.dropdown-parent-effect').each(function() {
+
+			var effectDiv_values = '';
+				$('.dropdown-parent-effect').each(function() {
 						//get values
 						var text1 = $(this).find('.targetEffectAddr').val();
 						var text2 = $(this).find('#operationEffect').val();
@@ -169,25 +221,71 @@
 					}					
 					if(effectText==""){
 						if(operationEff=='AND' || operationEff=='OR'){
-							effectText="\nEFFECT: TARGET=[REG(" + addrEff + ")] OP=[" + operationEff + "] BIT=[" + bitNumberEff + "]";
+							if(addrChoice!='-1' && addrChoice=='logic'){
+								effectText="\nEFFECT: TARGET=[REG(" + addrEff + ")] OP=[" + operationEff + "] BIT=[" + bitNumberEff + "]";
+							}else if(addrChoice!='-1' && addrChoice=='reg'){
+								if(chiplet!='-1' && chiplet=='yes' ){
+									effectText="\nEFFECT: TARGET=[REG(MYCHIPLET," + addrEff + ")] OP=[" + operationEff + "] BIT=[" + bitNumberEff + "]";
+								}else if(chiplet!='-1' && chiplet=='no'){
+									effectText="\nEFFECT: TARGET=[REG(" + addrEff + ")] OP=[" + operationEff + "] BIT=[" + bitNumberEff + "]";
+								}
+						    }
 						}else{
-							effectText="\nEFFECT: TARGET=[REG(" + addrEff + ")] OP=[" + operationEff + "] BOX1=[" + box1eff + "] BOX2=[" + box2eff + "]";
+							if(addrChoice!='-1' && addrChoice=='logic'){
+								effectText="\nEFFECT: TARGET=[REG(" + addrEff + ")] OP=[" + operationEff + "] BOX1=[" + box1eff + "] BOX2=[" + box2eff + "]";
+							}else if(addrChoice!='-1' && addrChoice=='reg'){
+								if(chiplet!='-1' && chiplet=='yes' ){
+									effectText="\nEFFECT: TARGET=[REG(MYCHIPLET," + addrEff + ")] OP=[" + operationEff + "] BOX1=[" + box1eff + "] BOX2=[" + box2eff + "]";
+								}else if(chiplet!='-1' && chiplet=='no'){
+									effectText="\nEFFECT: TARGET=[REG(" + addrEff + ")] OP=[" + operationEff + "] BOX1=[" + box1eff + "] BOX2=[" + box2eff + "]";
+								}
+						    }
 						}						
 					}
 					else{
 						if(operationEff=='AND' || operationEff=='OR'){
-							effectText=effectText+"\nEFFECT: TARGET=[REG(" + addrEff + ")] OP=[" + operationEff + "] BIT=[" + bitNumberEff + "]";
+							if(addrChoice!='-1' && addrChoice=='logic'){
+								effectText=effectText+"\nEFFECT: TARGET=[REG(" + addrEff + ")] OP=[" + operationEff + "] BIT=[" + bitNumberEff + "]";
+							}else if(addrChoice!='-1' && addrChoice=='reg'){
+								if(chiplet!='-1' && chiplet=='yes' ){
+									effectText=effectText+"\nEFFECT: TARGET=[REG(MYCHIPLET," + addrEff + ")] OP=[" + operationEff + "] BIT=[" + bitNumberEff + "]";
+								}else if(chiplet!='-1' && chiplet=='no'){
+									effectText=effectText+"\nEFFECT: TARGET=[REG(" + addrEff + ")] OP=[" + operationEff + "] BIT=[" + bitNumberEff + "]";
+								}
+						    }
 					}else{
-						   effectText=effectText+"\nEFFECT: TARGET=[REG(" + addrEff + ")] OP=[" + operationEff + "] BOX1=[" + box1eff + "] BOX2=[" + box2eff + "]";
+						if(addrChoice!='-1' && addrChoice=='logic'){
+							effectText=effectText+"\nEFFECT: TARGET=[REG(" + addrEff + ")] OP=[" + operationEff + "] BOX1=[" + box1eff + "] BOX2=[" + box2eff + "]";
+							}else if(addrChoice!='-1' && addrChoice=='reg'){
+								if(chiplet!='-1' && chiplet=='yes' ){
+									effectText=effectText+"\nEFFECT: TARGET=[REG(MYCHIPLET," + addrEff + ")] OP=[" + operationEff + "] BOX1=[" + box1eff + "] BOX2=[" + box2eff + "]";
+								}else if(chiplet!='-1' && chiplet=='no'){
+									effectText=effectText+"\nEFFECT: TARGET=[REG(" + addrEff + ")] OP=[" + operationEff + "] BOX1=[" + box1eff + "] BOX2=[" + box2eff + "]";
+								}
+						    }
 					    }						
 				    }
 				}
-				effectText=effectText+"}";
-				textToSave=causeText+effectText;
-			}
-			else if (cause == 'yes' && effects == 'no') {
+
+			if (cause == 'yes' && effects == 'no'){
 				causeText=causeText+"}";
 				textToSave=causeText;
+			}
+			else if(cause == 'no' && effects == 'yes'){
+				if(addrChoice!='-1' && addrChoice=='logic'){
+					effectText="CAUSE_EFFECT{\nWATCH=[REG(" + watchReg + ")] \nLABEL=[" + label + "]"+effectText+"}";
+				}else if(addrChoice!='-1' && addrChoice=='reg'){
+					if(chiplet!='-1' && chiplet=='yes' ){
+						effectText="CAUSE_EFFECT{\nWATCH=[REG(MYCHIPLET," + watchReg + ")] \nLABEL=[" + label + "]"+effectText+"}";
+					}else if(chiplet!='-1' && chiplet=='no'){
+						effectText="CAUSE_EFFECT{\nWATCH=[REG(" + watchReg + ")] \nLABEL=[" + label + "]"+effectText+"}";
+					}
+				}
+				textToSave=effectText;
+			}
+			else if(cause == 'yes' && effects == 'yes'){
+				effectText=effectText+"}";
+				textToSave=causeText+effectText;
 			}
 			textGlobal=textToSave;
 			document.getElementById("prevAction").value = textToSave;
@@ -197,6 +295,31 @@
 		}
 
 		function saveTextAsFile() {
+			var chiplet = document.getElementById("chiplet").value;
+			var addrChoice = document.getElementById("addrChoice").value;
+			var watchReg = document.getElementById("watchReg").value;
+			var label = document.getElementById("label").value;
+			var cause = document.getElementById("cause").value;
+			var effects = document.getElementById("effects").value;
+			
+			if(chiplet=='-1'){
+				alert("Please select if you want to apply for Chiplet or not");
+				return false;
+			}else if(label==''){
+				alert("Please provide label value");
+				return false;
+			}
+			else if(addrChoice=='-1'){
+				alert("Please select your choice of address");
+				return false;
+			}else if(watchReg==''){
+				alert("Please provide watch register address");
+				return false;
+			}
+			else if(cause=='-1' && effects=='-1'){
+				alert("Please select cause or effect");
+				return false;
+			}
 			var textToSave = textGlobal;			
 			textToSave = textToSave.replace(/\n/g, "\r\n");
 			var textToSaveAsBlob = new Blob([textToSave], { type: "text/plain" });
@@ -386,11 +509,29 @@
 		<center>
 			<h1>Dynamic Code Generator</h1>
 		</center>
+		<div class="dropdown" style="margin-left:-15px">
+			Do you want to select the Chiplets:
+			<select id="chiplet">
+				<option value="-1">Select One</option>
+				<option value="yes">Yes</option>
+				<option value="no">No</option>
+			</select>
+		</div>
 		<div class="dropdown-parent">
+			<label style="margin-left:1px">Label</label>
+			<input type="text" id="label" />
+		</div>
+		<div class="dropdown-parent">
+			<div class="dropdown" style="margin-left:-15px">
+				How you want your address to be:
+				<select id="addrChoice">
+					<option value="-1">Select One</option>
+					<option value="reg">Reg</option>
+					<option value="logic">Logic</option>
+				</select>
+			</div>			
 			<label>Watch Reg</label>
 			<input type="text" id="watchReg" onblur="isValidhex(this)"/>
-			<label style="margin-left:275px">Label</label>
-			<input type="text" id="label" />
 		</div>
 		<div class="dropdown" style="margin-left:-15px">
 			Do you want to select the Causes:
