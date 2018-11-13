@@ -38,7 +38,7 @@
 			$(".box1Cause").hide();
 			$(".box2").hide();
 			$(".box2Cause").hide();
-
+			
 			$(".bitNumEffect").hide();
 			$(".bitNumberEffect").hide();
 			$(".box1Eff").hide();
@@ -49,6 +49,7 @@
 			$(".dropdown-effect-bit-type").hide();
 			$(".dropdown-cause-literal-type").hide();
 			$(".dropdown-effect-literal-type").hide();
+			$(".dropdown-parent-chiplet").hide();
 			
 			$('#operation').prop('selectedIndex',0);
 			$('#operationEffect').prop('selectedIndex',0);
@@ -91,6 +92,12 @@
 			}
 		}
 		function previewAct() {
+			var value = [];
+			$(':checkbox:checked').each(function(i){
+				value[i] = $(this).val();
+			});
+			var chiplet_values=value.toString();
+
 			var causeText="";
 			var effectText="";
 			var textToSave = document.getElementById("prevAction").value;		
@@ -365,30 +372,43 @@
 
 				if(causeText==""){
 					if(operation=='BIT_ON'){
-						causeText="CAUSE_EFFECT{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "] \nCAUSE: TARGET=[" + addr + "] OP=[" + operation + "] BIT=[" + bitNumber + "]";						
-					}
-					else if(operation.includes('EQUALTO') || operation.includes('AND') || operation.includes('OR')){
-						if(operation.includes('MASK')){
-							causeText="CAUSE_EFFECT{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "] \nCAUSE: TARGET=[" + addr + "] OP=" + operation + " DATA=[" + dataCause + "] MASK=[" + maskCause + "]";
+						if(chiplet=='yes'){
+							causeText="CAUSE_EFFECT CHIPLETS "+chiplet_values+"{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "] \nCAUSE: TARGET=[" + addr + "] OP=[" + operation + "] BIT=[" + bitNumber + "]";
 						}else{
-							causeText="CAUSE_EFFECT{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "] \nCAUSE: TARGET=[" + addr + "] OP=" + operation + " DATA=[" + maskCause + "]";
+							causeText="CAUSE_EFFECT{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "] \nCAUSE: TARGET=[" + addr + "] OP=[" + operation + "] BIT=[" + bitNumber + "]";
+						}						
+					}else if(operation.includes('EQUALTO') || operation.includes('AND') || operation.includes('OR')){
+						if(operation.includes('MASK')){
+							if(chiplet=='yes'){
+								causeText="CAUSE_EFFECT CHIPLETS "+chiplet_values+"{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "] \nCAUSE: TARGET=[" + addr + "] OP=" + operation + " DATA=[" + dataCause + "] MASK=[" + maskCause + "]";
+							}else{
+								causeText="CAUSE_EFFECT{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "] \nCAUSE: TARGET=[" + addr + "] OP=" + operation + " DATA=[" + dataCause + "] MASK=[" + maskCause + "]";
+							}	
+						}else{
+							if(chiplet=='yes'){
+								causeText="CAUSE_EFFECT CHIPLETS "+chiplet_values+"{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "] \nCAUSE: TARGET=[" + addr + "] OP=" + operation + " DATA=[" + maskCause + "]";
+							}else{
+								causeText="CAUSE_EFFECT{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "] \nCAUSE: TARGET=[" + addr + "] OP=" + operation + " DATA=[" + maskCause + "]";
+							}
 						}
 					}
 					else{
-						causeText="CAUSE_EFFECT{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "] \nCAUSE: TARGET=[" + addr + "] OP=[" + operation + "] DATA=[" + dataCause + "] MASK=[" + maskCause + "]";
+						if(chiplet=='yes'){
+							causeText="CAUSE_EFFECT CHIPLETS "+chiplet_values+"{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "] \nCAUSE: TARGET=[" + addr + "] OP=[" + operation + "] DATA=[" + dataCause + "] MASK=[" + maskCause + "]";
+						}else{
+							causeText="CAUSE_EFFECT{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "] \nCAUSE: TARGET=[" + addr + "] OP=[" + operation + "] DATA=[" + dataCause + "] MASK=[" + maskCause + "]";
+						}						
 					}
 				}else{
 					if(operation=='BIT_ON'){
 						causeText=causeText+"\nCAUSE: TARGET=[" + addr + "] OP=[" + operation + "] BIT=[" + bitNumber + "]";
-					}
-					else if(operation.includes('EQUALTO') || operation.includes('AND') || operation.includes('OR')){
+					}else if(operation.includes('EQUALTO') || operation.includes('AND') || operation.includes('OR')	){
 						if(operation.includes('MASK')){
 							causeText=causeText+"\nCAUSE: TARGET=[" + addr + "] OP=" + operation + " DATA=[" + dataCause + "] MASK=[" + maskCause + "]";
 						}else{
 							causeText=causeText+"\nCAUSE: TARGET=[" + addr + "] OP=" + operation + " DATA=[" + dataCause + "]";
 						}
-					}
-					else{
+					}else{
 						causeText=causeText+"\nCAUSE: TARGET=[" + addr + "] OP=[" + operation + "] DATA=[" + dataCause + "] MASK=[" + maskCause + "]";
 					}					
 				}
@@ -400,7 +420,12 @@
 				textToSave=causeText;
 			}
 			else if(cause == 'no' && effects == 'yes'){
-				effectText="CAUSE_EFFECT{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "]"+effectText+"}";
+				if(chiplet=='yes'){
+					effectText="CAUSE_EFFECT CHIPLETS "+chiplet_values+"{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "]"+effectText+"}";
+				}
+				else{
+					effectText="CAUSE_EFFECT{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "]"+effectText+"}";
+				}				
 				textToSave=effectText;
 			}
 			else if(cause == 'yes' && effects == 'yes'){
@@ -643,6 +668,15 @@
 			}
 			return true;
 		}
+		function showcheckboxes(){
+			var chiplet=$("#chiplet").val();
+			if(chiplet=='yes'){
+				$(".dropdown-parent-chiplet").show();
+			}
+			else{
+				$(".dropdown-parent-chiplet").hide();
+			}
+		}
 
 	</script>
 
@@ -652,12 +686,23 @@
 		</center>
 		<div class="dropdown" style="margin-left:-15px">
 			Do you want to select the Chiplets:
-			<select id="chiplet">
+			<select id="chiplet" onchange="showcheckboxes()">
 				<option value="-1">Select One</option>
 				<option value="yes">Yes</option>
 				<option value="no">No</option>
 			</select>
+
+			<div class="dropdown-parent-chiplet">
+				<label><input id="checkbox1" type="checkbox" name="selector[]" value="xbus">xbus</label>
+				<label><input id="checkbox2" type="checkbox" name="selector[]" value="cache">cache</label>
+				<label><input id="checkbox3" type="checkbox" name="selector[]" value="ec">ec</label>
+				<label><input id="checkbox4" type="checkbox" name="selector[]" value="obus">obus</label>
+				<label><input id="checkbox5" type="checkbox" name="selector[]" value="tp">tp</label>
+				<label><input id="checkbox6" type="checkbox" name="selector[]" value="nest">nest</label>
+				<label><input id="checkbox7" type="checkbox" name="selector[]" value="pcie">pcie</label>			
+			</div>
 		</div>
+
 		<div class="dropdown-parent">
 			<label style="margin-left:1px">Label</label>
 			<input type="text" id="label" />
