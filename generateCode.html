@@ -138,7 +138,7 @@
 						if(text2=='BIT_ON'){
 							var text3 = $(this).find('.bitNumberEffect').val();
 							effectDiv_values += '|'+ text1 +','+ text2 +','+ text3;
-						}else if(text2=='EQUALTO'){
+						}else if(text2=='EQUALTO' || text2=='AND' || text2=='OR'){
 							dataEffect=$(this).find('.box1effect').val();
 							maskEffect=$(this).find('.box2effect').val();
 							var literalTypeEff=$(this).find('#literalTypeEffect').val();
@@ -161,7 +161,7 @@
 					var operationEff=effect_arr_val[1];
 					if(operationEff=='BIT_ON'){
 						var bitNumberEff=effect_arr_val[2];
-					}else if(operationEff=='EQUALTO'){
+					}else if(operationEff=='EQUALTO' || operationEff=='AND' || operationEff=='OR'){
 						// Logic to set values when EQUALTO is the option: values to set watchReg, addr, operation
 						dataEffect=effect_arr_val[2];
 						maskEffect=effect_arr_val[3];
@@ -227,7 +227,7 @@
 						if(operationEff=='BIT_ON'){
 							effectText="\nEFFECT: TARGET=[" + addrEff + "] OP=[" + operationEff + "] BIT=[" + bitNumberEff + "]";
 						}
-						else if(operationEff.includes('EQUALTO')){
+						else if(operationEff.includes('EQUALTO') || operationEff.includes('AND') || operationEff.includes('OR')){
 							if(operationEff.includes('MASK')){
 								effectText="\nEFFECT: TARGET=[" + addrEff + "] OP="+ operationEff +" DATA=[" + dataEffect + "] MASK=[" + maskEffect + "]";
 							}else{
@@ -241,7 +241,7 @@
 						if(operationEff=='BIT_ON'){
 							effectText=effectText+"\nEFFECT: TARGET=[" + addrEff + "] OP=[" + operationEff + "] BIT=[" + bitNumberEff + "]";
 					}
-					else if(operationEff.includes('EQUALTO')){
+					else if(operationEff.includes('EQUALTO') || operationEff.includes('AND') || operationEff.includes('OR')){
 						if(operationEff.includes('MASK')){
 							effectText=effectText+"\nEFFECT: TARGET=[" + addrEff + "] OP=" + operationEff + " DATA=[" + dataEffect + "] MASK=[" + maskEffect + "]";
 						}else{
@@ -270,7 +270,7 @@
 					if(text2=='BIT_ON'){
 						var text3 = $(this).find('.bitNumber').val();
 						causeDiv_values +='|'+ text1 +','+ text2 +','+ text3;
-					}else if(text2=='EQUALTO'){
+					}else if(text2=='EQUALTO' || text2=='AND' || text2=='OR'){
 						var literalType=$(this).find('#literalTypeCause').val();
 						var noOfBits= $(this).find('#noOfBitsCause').val();
 						dataCause=$(this).find('.box1').val();
@@ -292,7 +292,7 @@
 				var operation=cause_arr_val[1];
 				if(operation=='BIT_ON'){
 					var bitNumber=cause_arr_val[2];
-				}else if(operation=='EQUALTO'){
+				}else if(operation=='EQUALTO' || operation=='AND' || operation=='OR'){
 					// Logic to set values when EQUALTO is the option: values to set watchReg, addr, operation, box1, box2
 					dataCause=cause_arr_val[2];
 					maskCause=cause_arr_val[3];
@@ -367,7 +367,7 @@
 					if(operation=='BIT_ON'){
 						causeText="CAUSE_EFFECT{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "] \nCAUSE: TARGET=[" + addr + "] OP=[" + operation + "] BIT=[" + bitNumber + "]";						
 					}
-					else if(operation.includes('EQUALTO')){
+					else if(operation.includes('EQUALTO') || operation.includes('AND') || operation.includes('OR')){
 						if(operation.includes('MASK')){
 							causeText="CAUSE_EFFECT{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "] \nCAUSE: TARGET=[" + addr + "] OP=" + operation + " DATA=[" + dataCause + "] MASK=[" + maskCause + "]";
 						}else{
@@ -381,7 +381,7 @@
 					if(operation=='BIT_ON'){
 						causeText=causeText+"\nCAUSE: TARGET=[" + addr + "] OP=[" + operation + "] BIT=[" + bitNumber + "]";
 					}
-					else if(operation.includes('EQUALTO')){
+					else if(operation.includes('EQUALTO') || operation.includes('AND') || operation.includes('OR')){
 						if(operation.includes('MASK')){
 							causeText=causeText+"\nCAUSE: TARGET=[" + addr + "] OP=" + operation + " DATA=[" + dataCause + "] MASK=[" + maskCause + "]";
 						}else{
