@@ -115,230 +115,43 @@
 				alert("Please provide watch register address");
 				return false;
 			}
-			else if(cause=='-1' && effects=='-1'){
-				alert("Please select cause or effect");
+			else if(effects=='-1'){
+				alert("Please select effect");
 				return false;
 			}
-
-			if(addrChoice!='-1' && addrChoice=='logic'){
-				watchReg="REG(" + watchReg + ")";
-			}
-			else if(addrChoice!='-1' && addrChoice=='reg'){
-				if(chiplet!='-1' && chiplet=='yes'){
-					watchReg="REG(MYCHIPLET," + watchReg + ")";
-				}else if(chiplet!='-1' && chiplet=='no'){
-					watchReg="REG(" + watchReg + ")";
-				}
+			else if(cause=='-1'){
+				alert("Please choose if you want to select cause or not");
+				return false;
 			}
 			document.getElementById("previewAction").style.display = "block";
-			// Get Cause Values
-			var causeDiv_values = '';
-				$('.dropdown-parent-cause').each(function() {
-					//get values
-					var addrType= $(this).find('#dataTypeCause').val();
-					alert("addrType>>"+addrType);
-					var text1 = $(this).find('.targetAddr').val();
-					if(addrType=='logicCause'){
-						alert("Inside logic cause>>");
-						text1="REG(" + text1 + ")";
-					}else if(addrType=='regCause'){
-						alert("Inside reg cause>>");
-						if(chiplet!='-1' && chiplet=='yes'){
-							text1="REG(MYCHIPLET%" + text1 + ")";
-						}else if(chiplet!='-1' && chiplet=='no'){
-							text1="REG(" + text1 + ")";
-						}
-					}
-					alert("text1>>"+text1);
-					var text2 = $(this).find('#operation').val();
-					if(text2=='AND' || text2=='OR'){
-						var text3 = $(this).find('.bitNumber').val();
-						causeDiv_values +='|'+ text1 +','+ text2 +','+ text3;
-					}else if(text2=='EQUALTO'){
-						alert("inside eq");
-						var literalType=$(this).find('#literalTypeCause').val();
-						alert("literalType>>"+literalType);
-						if(literalType=='literalCause'){
-							alert("inside literal cause");
-							var noOfBits= $(this).find('#noOfBitsCause').val();
-							alert("noOfBits>>"+noOfBits);
-							var data=$(this).find('.box1').val();
-							var mask=$(this).find('.box2').val();
-							data="LITERAL("+noOfBits+"%"+data+")";
-							if(mask==''){
-								text2="["+text2+"%BUF]";
-							}else{
-								mask="LITERAL("+noOfBits+"%"+mask+")";
-								text2="["+text2+"%BUF%MASK]";
-							}
-							alert("text2>>"+text2);
-						}else{
-							if(addrType=='logicCause'){
-							  var data=$(this).find('.box1').val();
-							  var mask=$(this).find('.box2').val();
-							  data="REG("+data+")";
-							  if(mask==''){
-								text2="["+text2+"%BUF]";
-							  }else{
-								mask="REG("+mask+")";
-								text2="["+text2+"%BUF%MASK]";
-							  }
-							}else if(addrType=='regCause'){
-								var data=$(this).find('.box1').val();
-							    var mask=$(this).find('.box2').val();
-								if(chiplet!='-1' && chiplet=='yes'){
-									data="REG("+data+")";
-								}else if(chiplet!='-1' && chiplet=='no'){
-									data="REG(MYCHIPLET%"+data+")";
-									if(mask==''){
-										text2="["+text2+"%BUF]";
-									}else{
-										mask="REG(MYCHIPLET%"+mask+")";
-										text2="["+text2+"%BUF%MASK]";
-									}
-									if(mask==''){
-										text2="["+text2+"%BUF]";
-									}else{
-										mask="REG("+mask+")";
-										text2="["+text2+"%BUF%MASK]";
-									}
-								}
-							}
-						}
-						causeDiv_values += '|'+ text1 +','+ text2 +','+ data+','+mask;
-						alert(causeDiv_values);
-					}
-					else {
-						var text3 = $(this).find('.box1').val();
-						var text4 = $(this).find('.box2').val();
-						causeDiv_values += '|'+ text1 +','+ text2 +','+ text3+','+text4;
-					}
-				});
-			var count=(causeDiv_values.split("|").length - 1);
-			var cause_arr;
-			cause_arr=causeDiv_values.split("|");
-			for(i=1;i<=count;i++){
-				var cause_arr_val=cause_arr[i].split(",");
-				var addr=cause_arr_val[0];
-				addr=addr.replace(/%/g, ',');
-				var operation=cause_arr_val[1];
-				operation=operation.slice(1,-1);
-				alert("operation:>>"+operation);
-				operation=operation.replace(/%/g, ',');
-				alert("operation>>"+operation);
-				if(operation=='AND' || operation=='OR'){
-					var bitNumber=cause_arr_val[2];
-				}
-				else{
-					var box1=cause_arr_val[2];
-					box1=box1.replace(/%/g, ',');
-					var box2=cause_arr_val[3];
-					box2=box2.replace(/%/g, ',');
-				}
-				if(causeText==""){
-					if(operation=='AND' || operation=='OR'){
-						causeText="CAUSE_EFFECT{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "] \nCAUSE: TARGET=[" + addr + "] OP=[" + operation + "] BIT=[" + bitNumber + "]";						
-					}
-					else if(operation.includes('EQUALTO')){
-						if(operation.includes('MASK')){
-							causeText="CAUSE_EFFECT{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "] \nCAUSE: TARGET=[" + addr + "] OP=[" + operation + "] DATA=[" + box1 + "] MASK=[" + box2 + "]";
-						}else{
-							causeText="CAUSE_EFFECT{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "] \nCAUSE: TARGET=[" + addr + "] OP=[" + operation + "] DATA=[" + box1 + "]";
-						}
-					}
-					else{
-						causeText="CAUSE_EFFECT{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "] \nCAUSE: TARGET=[" + addr + "] OP=[" + operation + "] DATA=[" + box1 + "] MASK=[" + box2 + "]";
-					}
-				}else{
-					if(operation=='AND' || operation=='OR'){
-						causeText=causeText+"\nCAUSE: TARGET=[" + addr + "] OP=[" + operation + "] BIT=[" + bitNumber + "]";
-					}
-					else if(operation.includes('EQUALTO')){
-						if(operation.includes('MASK')){
-							causeText=causeText+"\nCAUSE: TARGET=[" + addr + "] OP=[" + operation + "] DATA=[" + box1 + "] MASK=[" + box2 + "]";
-						}else{
-							causeText=causeText+"\nCAUSE: TARGET=[" + addr + "] OP=[" + operation + "] DATA=[" + box1 + "]";
-						}
-					}
-					else{
-						causeText=causeText+"\nCAUSE: TARGET=[" + addr + "] OP=[" + operation + "] DATA=[" + box1 + "] MASK=[" + box2 + "]";
-					}					
-				}
-			}
-
-			var effectDiv_values = '';
+			
+				//Get Effect values
+				var effectDiv_values = '';
+				var addrTypeEff='';
+				var dataEffect='';
+				var maskEffect='';
 				$('.dropdown-parent-effect').each(function() {
-						//get values
-						var addrTypeEff= $(this).find('.dropdown-effect-data-type').val();
+						addrTypeEff= $(this).find('#dataTypeEffect').val();
 						var text1 = $(this).find('.targetEffectAddr').val();
-						if(addrTypeEff=='logicEffect'){
-							text1="REG(" + text1 + ")";
-						}else if(addrTypeEff=='regEffect'){
-							if(chiplet!='-1' && chiplet=='yes'){
-								text1="REG(MYCHIPLET," + text1 + ")";
-							}else if(chiplet!='-1' && chiplet=='no'){
-								text1="REG(" + text1 + ")";
-							}
-						}
-
 						var text2 = $(this).find('#operationEffect').val();
-						if(text2=='AND' || text2=='OR'){
+
+						if(text2=='BIT_ON'){
 							var text3 = $(this).find('.bitNumberEffect').val();
 							effectDiv_values += '|'+ text1 +','+ text2 +','+ text3;
 						}else if(text2=='EQUALTO'){
-							var literalTypeEff=$(this).find('.dropdown-effect-literal-type').val();
-							if(literalTypeEff=='literalCause'){
-								var noOfBitsEff= $(this).find('.dropdown-effect-bit-type').val();
-								var data=$(this).find('.box1').val();
-								var mask=$(this).find('.box2').val();
-								data="LITERAL("+noOfBitsEff+","+data;
-								if(mask==''){
-									text2=text2+",BUF";
-								}else{
-									mask="LITERAL("+noOfBitsEff+","+mask;
-									text2=text2+",BUF,MASK";
-								}
-							}else{
-								if(addrType=='logicEffect'){
-								var data=$(this).find('.box1').val();
-								var mask=$(this).find('.box2').val();
-								data="REG("+data+")";
-								if(mask==''){
-									text2=text2+",BUF";
-								}else{
-									mask="REG("+mask+")";
-									text2=text2+",BUF,MASK";
-								}
-								}else if(addrType=='regEffect'){
-									var data=$(this).find('.box1').val();
-									var mask=$(this).find('.box2').val();
-									if(chiplet!='-1' && chiplet=='yes'){
-										data="REG("+data+")";
-									}else if(chiplet!='-1' && chiplet=='no'){
-										data="REG(MYCHIPLET,"+data+")";
-										if(mask==''){
-											text2=text2+",BUF";
-										}else{
-											mask="REG(MYCHIPLET,"+mask+")";
-											text2=text2+",BUF,MASK";
-										}
-										if(mask==''){
-											text2=text2+",BUF";
-										}else{
-											mask="REG("+mask+")";
-											text2=text2+",BUF,MASK";
-										}
-									}
-								}
-							}
-							effectDiv_values += '|'+ text1 +','+ text2 +','+ data+','+mask;
-					}
+							dataEffect=$(this).find('.box1effect').val();
+							maskEffect=$(this).find('.box2effect').val();
+							var literalTypeEff=$(this).find('#literalTypeEffect').val();
+							var noOfBitsEff= $(this).find('#noOfBitsEffect').val();
+							effectDiv_values += '|'+ text1 +','+ text2 +','+ dataEffect+','+maskEffect+','+ literalTypeEff+','+noOfBitsEff+','+addrTypeEff;
+					    }
 						else{
 							var text3 = $(this).find('.box1effect').val();
 							var text4 = $(this).find('.box2effect').val();
 							effectDiv_values += '|'+ text1 +','+ text2 +','+ text3+','+text4;
 						}						
-					});
+				});
+
 				var count_eff=(effectDiv_values.split("|").length - 1);
 				var effect_arr;
 				effect_arr=effectDiv_values.split("|");
@@ -346,43 +159,241 @@
 					var effect_arr_val=effect_arr[i].split(",");
 					var addrEff=effect_arr_val[0];
 					var operationEff=effect_arr_val[1];
-					if(operationEff=='AND' || operationEff=='OR'){
+					if(operationEff=='BIT_ON'){
 						var bitNumberEff=effect_arr_val[2];
-					}else{
-						var box1eff=effect_arr_val[2];
-						var box2eff=effect_arr_val[3];
-					}					
+					}else if(operationEff=='EQUALTO'){
+						// Logic to set values when EQUALTO is the option: values to set watchReg, addr, operation
+						dataEffect=effect_arr_val[2];
+						maskEffect=effect_arr_val[3];
+						var literalTypeEffect=effect_arr_val[4];
+						var noOfBitsEffect=effect_arr_val[5];
+						addrTypeEff=effect_arr_val[6];
+						
+						if(literalTypeEffect=='literalEffect'){
+							dataEffect="LITERAL("+noOfBitsEffect+","+dataEffect+")";
+							if(maskEffect==''){
+								operationEff="["+operationEff+",BUF]";
+							}else{
+								maskEffect="LITERAL("+noOfBitsEffect+","+maskEffect+")";
+								operationEff="["+operationEff+",BUF,MASK]";
+							}
+						}else{
+							if(addrTypeEff=='logicEffect'){
+								dataEffect="REG("+dataEffect+")";
+								if(maskEffect==''){
+									operationEff="["+operationEff+",BUF]";
+								}else{
+									maskEffect="REG("+maskEffect+")";
+									operationEff="["+operationEff+",BUF,MASK]";
+								}
+							}else if(addrTypeEff=='regEffect'){
+								if(chiplet!='-1' && chiplet=='yes'){
+									dataEffect="REG("+dataEffect+")";
+								}else if(chiplet!='-1' && chiplet=='no'){
+									dataEffect="REG(MYCHIPLET,"+dataEffect+")";
+									if(maskEffect==''){
+										operationEff="["+operationEff+",BUF]";
+									}else{
+										maskEffect="REG(MYCHIPLET,"+maskEffect+")";
+										operationEff="["+operationEff+",BUF,MASK]";
+									}
+									if(maskEffect==''){
+										operationEff="["+operationEff+",BUF]";
+									}else{
+										maskEffect="REG("+maskEffect+")";
+										operationEff="["+operationEff+",BUF,MASK]";
+									}
+								}
+							}
+						}
+					}
+					else{
+						dataEffect=effect_arr_val[2];
+						maskEffect=effect_arr_val[3];
+					}
+					
+					if(addrTypeEff!='-1' && addrTypeEff=='logicEffect'){
+						addrEff="REG(" + addrEff + ")";
+					}
+					else if(addrTypeEff!='-1' && addrTypeEff=='regEffect'){
+						if(chiplet!='-1' && chiplet=='yes'){
+							addrEff="REG(MYCHIPLET," + addrEff + ")";
+						}else if(chiplet!='-1' && chiplet=='no'){
+							addrEff="REG(" + addrEff + ")";
+						}
+					}
+					
 					if(effectText==""){
-						if(operationEff=='AND' || operationEff=='OR'){
+						if(operationEff=='BIT_ON'){
 							effectText="\nEFFECT: TARGET=[" + addrEff + "] OP=[" + operationEff + "] BIT=[" + bitNumberEff + "]";
 						}
 						else if(operationEff.includes('EQUALTO')){
 							if(operationEff.includes('MASK')){
-								effectText="\nEFFECT: TARGET=[" + addrEff + "] OP=[" + operationEff + "] DATA=[" + box1eff + "] MASK=[" + box2eff + "]";
+								effectText="\nEFFECT: TARGET=[" + addrEff + "] OP="+ operationEff +" DATA=[" + dataEffect + "] MASK=[" + maskEffect + "]";
 							}else{
-								effectText="\nEFFECT: TARGET=[" + addrEff + "] OP=[" + operationEff + "] DATA=[" + box1eff + "]";
+								effectText="\nEFFECT: TARGET=[" + addrEff + "] OP="+ operationEff +" DATA=[" + dataEffect + "]";
 							}
-					    }
-						else{
-							effectText="\nEFFECT: TARGET=[" + addrEff + "] OP=[" + operationEff + "] DATA=[" + box1eff + "] MASK=[" + box2eff + "]";
+					    }else{
+							effectText="\nEFFECT: TARGET=[" + addrEff + "] OP=[" + operationEff + "] DATA=[" + dataEffect + "] MASK=[" + maskEffect + "]";
 						}						
 					}
 					else{
-						if(operationEff=='AND' || operationEff=='OR'){
+						if(operationEff=='BIT_ON'){
 							effectText=effectText+"\nEFFECT: TARGET=[" + addrEff + "] OP=[" + operationEff + "] BIT=[" + bitNumberEff + "]";
 					}
-					else if(operation.includes('EQUALTO')){
-						if(operation.includes('MASK')){
-							effectText=effectText+"\nEFFECT: TARGET=[" + addrEff + "] OP=[" + operationEff + "] DATA=[" + box1eff + "] MASK=[" + box2eff + "]";
+					else if(operationEff.includes('EQUALTO')){
+						if(operationEff.includes('MASK')){
+							effectText=effectText+"\nEFFECT: TARGET=[" + addrEff + "] OP=" + operationEff + " DATA=[" + dataEffect + "] MASK=[" + maskEffect + "]";
 						}else{
-							effectText=effectText+"\nEFFECT: TARGET=[" + addrEff + "] OP=[" + operationEff + "] DATA=[" + box1eff + "]";
+							effectText=effectText+"\nEFFECT: TARGET=[" + addrEff + "] OP=[" + operationEff + "] DATA=[" + dataEffect + "]";
 						}
 					}
 					else{
-						 effectText=effectText+"\nEFFECT: TARGET=[" + addrEff + "] OP=[" + operationEff + "] DATA=[" + box1eff + "] MASK=[" + box2eff + "]";
+						 effectText=effectText+"\nEFFECT: TARGET=[" + addrEff + "] OP=[" + operationEff + "] DATA=[" + dataEffect + "] MASK=[" + maskEffect + "]";
 					    }						
 				    }
 				}
+				
+			// Effect part ends	
+			
+			// Get Cause Values
+			var causeDiv_values = '';
+			var addrType='';
+			var dataCause='';
+			var maskCause='';
+
+				$('.dropdown-parent-cause').each(function() {
+					addrType= $(this).find('#dataTypeCause').val();
+					var text1 = $(this).find('.targetAddr').val();
+					var text2 = $(this).find('#operation').val();
+					
+					if(text2=='BIT_ON'){
+						var text3 = $(this).find('.bitNumber').val();
+						causeDiv_values +='|'+ text1 +','+ text2 +','+ text3;
+					}else if(text2=='EQUALTO'){
+						var literalType=$(this).find('#literalTypeCause').val();
+						var noOfBits= $(this).find('#noOfBitsCause').val();
+						dataCause=$(this).find('.box1').val();
+						maskCause=$(this).find('.box2').val();
+						causeDiv_values += '|'+ text1 +','+ text2 +','+ dataCause+','+maskCause+','+ literalType+','+noOfBits+','+addrType;
+					}else {
+						var text3 = $(this).find('.box1').val();
+						var text4 = $(this).find('.box2').val();
+						causeDiv_values += '|'+ text1 +','+ text2 +','+ text3+','+text4;
+					}
+				});
+	
+			var count=(causeDiv_values.split("|").length - 1);
+			var cause_arr;
+			cause_arr=causeDiv_values.split("|");
+			for(i=1;i<=count;i++){
+				var cause_arr_val=cause_arr[i].split(",");
+				var addr=cause_arr_val[0];
+				var operation=cause_arr_val[1];
+				if(operation=='BIT_ON'){
+					var bitNumber=cause_arr_val[2];
+				}else if(operation=='EQUALTO'){
+					// Logic to set values when EQUALTO is the option: values to set watchReg, addr, operation, box1, box2
+					dataCause=cause_arr_val[2];
+					maskCause=cause_arr_val[3];
+					var literalType=cause_arr_val[4];
+					var noOfBits=cause_arr_val[5];
+					addrType=cause_arr_val[6];
+
+					if(literalType=='literalCause'){
+						dataCause="LITERAL("+noOfBits+","+dataCause+")";
+						if(maskCause==''){
+							operation="["+operation+",BUF]";
+						}else{
+							maskCause="LITERAL("+noOfBits+","+maskCause+")";
+							operation="["+operation+",BUF,MASK]";
+						}
+    				}else{
+						if(addrType=='logicCause'){
+							dataCause="REG("+dataCause+")";
+						if(maskCause==''){
+							operation="["+operation+",BUF]";
+						}else{
+							maskCause="REG("+maskCause+")";
+							operation="["+operation+",BUF,MASK]";
+						}
+						}else if(addrType=='regCause'){
+							if(chiplet!='-1' && chiplet=='yes'){
+								dataCause="REG("+dataCause+")";
+							}else if(chiplet!='-1' && chiplet=='no'){
+								dataCause="REG(MYCHIPLET,"+dataCause+")";
+								if(maskCause==''){
+									operation="["+operation+",BUF]";
+								}else{
+									maskCause="REG(MYCHIPLET,"+maskCause+")";
+									operation="["+operation+",BUF,MASK]";
+								}
+								if(maskCause==''){
+									operation="["+operation+",BUF]";
+								}else{
+									maskCause="REG("+maskCause+")";
+									operation="["+operation+",BUF,MASK]";
+								}
+							}
+						}
+    				}
+				}
+				else{
+					dataCause=cause_arr_val[2];
+					maskCause=cause_arr_val[3];
+				}
+				if(addrChoice!='-1' && addrChoice=='logic'){
+					watchReg="REG(" + watchReg + ")";
+				}
+				else if(addrChoice!='-1' && addrChoice=='reg'){
+					if(chiplet!='-1' && chiplet=='yes'){
+						watchReg="REG(MYCHIPLET," + watchReg + ")";
+					}else if(chiplet!='-1' && chiplet=='no'){
+						watchReg="REG(" + watchReg + ")";
+					}
+				}
+				if(addrType!='-1' && addrType=='logicCause'){
+					addr="REG(" + addr + ")";
+				}
+				else if(addrType!='-1' && addrType=='regCause'){
+					if(chiplet!='-1' && chiplet=='yes'){
+						addr="REG(MYCHIPLET," + addr + ")";
+					}else if(chiplet!='-1' && chiplet=='no'){
+						addr="REG(" + addr + ")";
+					}
+				}
+
+				if(causeText==""){
+					if(operation=='BIT_ON'){
+						causeText="CAUSE_EFFECT{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "] \nCAUSE: TARGET=[" + addr + "] OP=[" + operation + "] BIT=[" + bitNumber + "]";						
+					}
+					else if(operation.includes('EQUALTO')){
+						if(operation.includes('MASK')){
+							causeText="CAUSE_EFFECT{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "] \nCAUSE: TARGET=[" + addr + "] OP=" + operation + " DATA=[" + dataCause + "] MASK=[" + maskCause + "]";
+						}else{
+							causeText="CAUSE_EFFECT{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "] \nCAUSE: TARGET=[" + addr + "] OP=" + operation + " DATA=[" + maskCause + "]";
+						}
+					}
+					else{
+						causeText="CAUSE_EFFECT{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "] \nCAUSE: TARGET=[" + addr + "] OP=[" + operation + "] DATA=[" + dataCause + "] MASK=[" + maskCause + "]";
+					}
+				}else{
+					if(operation=='BIT_ON'){
+						causeText=causeText+"\nCAUSE: TARGET=[" + addr + "] OP=[" + operation + "] BIT=[" + bitNumber + "]";
+					}
+					else if(operation.includes('EQUALTO')){
+						if(operation.includes('MASK')){
+							causeText=causeText+"\nCAUSE: TARGET=[" + addr + "] OP=" + operation + " DATA=[" + dataCause + "] MASK=[" + maskCause + "]";
+						}else{
+							causeText=causeText+"\nCAUSE: TARGET=[" + addr + "] OP=" + operation + " DATA=[" + dataCause + "]";
+						}
+					}
+					else{
+						causeText=causeText+"\nCAUSE: TARGET=[" + addr + "] OP=[" + operation + "] DATA=[" + dataCause + "] MASK=[" + maskCause + "]";
+					}					
+				}
+			}
+			// Cause Part ends
 
 			if (cause == 'yes' && effects == 'no'){
 				causeText=causeText+"}";
@@ -428,8 +439,12 @@
 				alert("Please provide watch register address");
 				return false;
 			}
-			else if(cause=='-1' && effects=='-1'){
-				alert("Please select cause or effect");
+			else if(effects=='-1'){
+				alert("Please select effect");
+				return false;
+			}
+			else if(cause=='-1'){
+				alert("Please choose if you want to select cause or not");
 				return false;
 			}
 			var textToSave = textGlobal;			
@@ -521,7 +536,7 @@
 		function showProperTextBox(that){
 			var divid=$(that).parents(':eq(1)').attr("id");
 			var dd_val=$(that).val();
-			if(dd_val=='AND'|| dd_val=='OR'){
+			if(dd_val=='BIT_ON'){
 				$("#"+divid+" .bitNumber").show();
 				$("#"+divid+" .bitNumCause").show();
 				$("#"+divid+" .box1").hide();
@@ -530,7 +545,7 @@
 				$("#"+divid+" .box2Cause").hide();
 				$("#"+divid+" .dropdown-cause-bit-type").hide();
 				$("#"+divid+" .dropdown-cause-literal-type").hide();
-			}else if(dd_val!='AND' && dd_val!='OR' && dd_val!='-1'){
+			}else if(dd_val=='AND' || dd_val=='OR' || dd_val=='EQUALTO'){
 				$("#"+divid+" .bitNumber").hide();
 				$("#"+divid+" .bitNumCause").hide();
 				$("#"+divid+" .box1").show();
@@ -553,8 +568,7 @@
 		function showProperTextBoxEffect(that){
 			var divid=$(that).parents(':eq(1)').attr("id");
 			var dd_val=$(that).val();
-
-			if(dd_val=='AND'|| dd_val=='OR'){
+			if(dd_val=='BIT_ON'){
 				$("#"+divid+" .bitNumEffect").show();
 				$("#"+divid+" .bitNumberEffect").show();
 				$("#"+divid+" .box1Eff").hide();
@@ -563,7 +577,7 @@
 				$("#"+divid+" .box2effect").hide();				
 				$("#"+divid+" .dropdown-effect-bit-type").hide();
 				$("#"+divid+" .dropdown-effect-literal-type").hide();
-			}else if(dd_val!='AND' && dd_val!='OR' && dd_val!='-1'){
+			}else if(dd_val=='AND' || dd_val=='OR' || dd_val=='EQUALTO'){
 				$("#"+divid+" .bitNumEffect").hide();
 				$("#"+divid+" .bitNumberEffect").hide();
 				$("#"+divid+" .box1Eff").show();
@@ -660,6 +674,66 @@
 			<label>Watch Reg</label>
 			<input type="text" id="watchReg" onblur="isValidhex(this)"/>
 		</div>
+		<div style="margin-left:1px">
+			Do you want to select the Effects:
+			<select id="effects" onchange="showEffectDiv()">
+				<option value="-1">Select One</option>
+				<option value="yes">Yes</option>
+				<option value="no">No</option>
+			</select>
+		</div>
+		<div id="effectDiv">
+			<div class="dropdown-parent-effect" data-count=1 id="effectDiv">
+				<div class="dropdown-effect-data-type" style="margin-left:-15px">
+							Address type:
+							<select id="dataTypeEffect">
+								<option value="-1">Select One</option>
+								<option value="regEffect">Reg</option>
+								<option value="logicEffect">Logic</option>
+					</select>
+				</div>
+				<label>Target Address</label>
+				<input type="text" class="targetEffectAddr" style="width: 90px;" onblur="isValidhexTargetAddressEffect(this)"/>
+				<div class="dropdown-effect-operation">
+					Operation:
+					<select id="operationEffect" onchange="showProperTextBoxEffect(this)">
+						<option value="-1">Select One</option>
+						<option value="AND">AND</option>
+						<option value="OR">OR</option>
+						<option value="EQUALTO">EQUALTO</option>
+						<option value="BIT_ON">BIT_ON</option>
+						<option value="ALLONES">ALLONES</option>
+						<option value="ALLZEROS">ALLZEROS</option>
+					</select>
+				</div>
+				<div class="dropdown-effect-literal-type" style="margin-left:-15px">
+						Data Type:
+						<select id="literalTypeEffect">
+							<option value="-1">Select One</option>
+							<option value="literalEffect">Literal</option>
+							<option value="regEffect">Reg</option>
+						</select>
+				</div>
+				<div class="dropdown-effect-bit-type" style="margin-left:-15px">
+						No of BITS:
+						<select id="noOfBitsEffect">
+							<option value="-1">Select One</option>
+							<option value="32">32</option>
+							<option value="64">64</option>
+					</select>
+				</div>
+				<label class="bitNumEffect">BIT Number</label>
+				<input type="text" class="bitNumberEffect" style="width: 90px;" onkeypress="return isNumber(event)"/>
+				
+				<label class="box1Eff">Data</label>
+				<input type="text" style="width: 90px;" class="box1effect" />
+
+				<label class="box2Eff" style="margin-left: 13px;">Mask</label>
+				<input type="text" style="width: 90px;" class="box2effect" />
+
+				<input type="button" onclick="addEffect(this)" value="+" />
+			</div>
+		</div>
 		<div class="dropdown" style="margin-left:-15px">
 			Do you want to select the Causes:
 			<select id="cause" onchange="showCauseDiv()">
@@ -719,67 +793,6 @@
 				<input type="text"  style="width: 90px;" class="box2" />
 
 				<input data-count="1" type="button" onclick="addCause(this)" value="+" />
-			</div>
-		</div>
-
-		<div style="margin-left:1px">
-			Do you want to select the Effects:
-			<select id="effects" onchange="showEffectDiv()">
-				<option value="-1">Select One</option>
-				<option value="yes">Yes</option>
-				<option value="no">No</option>
-			</select>
-		</div>
-		<div id="effectDiv">
-			<div class="dropdown-parent-effect" data-count=1 id="effectDiv">
-				<div class="dropdown-effect-data-type" style="margin-left:-15px">
-							Address type:
-							<select id="dataTypeEffect">
-								<option value="-1">Select One</option>
-								<option value="regEffect">Reg</option>
-								<option value="logicEffect">Logic</option>
-					</select>
-				</div>
-				<label>Target Address</label>
-				<input type="text" class="targetEffectAddr" style="width: 90px;" onblur="isValidhexTargetAddressEffect(this)"/>
-				<div class="dropdown-effect-operation">
-					Operation:
-					<select id="operationEffect" onchange="showProperTextBoxEffect(this)">
-						<option value="-1">Select One</option>
-						<option value="AND">AND</option>
-						<option value="OR">OR</option>
-						<option value="EQUALTO">EQUALTO</option>
-						<option value="BIT_ON">BIT_ON</option>
-						<option value="ALLONES">ALLONES</option>
-						<option value="ALLZEROS">ALLZEROS</option>
-					</select>
-				</div>
-				<div class="dropdown-effect-literal-type" style="margin-left:-15px">
-						Data Type:
-						<select id="literalTypeEffect">
-							<option value="-1">Select One</option>
-							<option value="literalEffect">Literal</option>
-							<option value="regEffect">Reg</option>
-						</select>
-				</div>
-				<div class="dropdown-effect-bit-type" style="margin-left:-15px">
-						No of BITS:
-						<select id="noOfBitsEffect">
-							<option value="-1">Select One</option>
-							<option value="32">32</option>
-							<option value="64">64</option>
-					</select>
-				</div>
-				<label class="bitNumEffect">BIT Number</label>
-				<input type="text" class="bitNumberEffect" style="width: 90px;" onkeypress="return isNumber(event)"/>
-				
-				<label class="box1Eff">Data</label>
-				<input type="text" style="width: 90px;" class="box1effect" />
-
-				<label class="box2Eff" style="margin-left: 13px;">Mask</label>
-				<input type="text" style="width: 90px;" class="box2effect" />
-
-				<input type="button" onclick="addEffect(this)" value="+" />
 			</div>
 		</div>
 
