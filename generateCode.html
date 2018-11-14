@@ -16,9 +16,7 @@
 		var resetFlag="";
 		function generateCodeOnload(resetFlag) {
 			document.getElementById("causeDiv").style.display = "none";
-			document.getElementById("effectDiv").style.display = "none";
 			document.getElementById("previewAction").style.display = "none";
-			document.getElementById("effects").value = "-1";
 			document.getElementById("cause").value = "-1";
 			document.getElementById("watchReg").value = "";
 			document.getElementById("label").value = "";
@@ -82,15 +80,6 @@
 				document.getElementById("causeDiv").style.display = "none";
 			}
 		}
-		function showEffectDiv() {
-			//alert("inside effect div onchange");
-			if (document.getElementById("effects").value == 'yes') {
-				document.getElementById("effectDiv").style.display = "block";
-			}
-			else if (document.getElementById("effects").value == 'no') {
-				document.getElementById("effectDiv").style.display = "none";
-			}
-		}
 		function previewAct() {
 			var value = [];
 			$(':checkbox:checked').each(function(i){
@@ -103,7 +92,6 @@
 			var textToSave = document.getElementById("prevAction").value;		
 			var label = document.getElementById("label").value;
 			var cause = document.getElementById("cause").value;
-			var effects = document.getElementById("effects").value;
 			var chiplet = document.getElementById("chiplet").value;
 			var addrChoice = document.getElementById("addrChoice").value;
 			var watchReg = document.getElementById("watchReg").value;
@@ -120,10 +108,6 @@
 				return false;
 			}else if(watchReg==''){
 				alert("Please provide watch register address");
-				return false;
-			}
-			else if(effects=='-1'){
-				alert("Please select effect");
 				return false;
 			}
 			else if(cause=='-1'){
@@ -483,12 +467,7 @@
 				}
 			}
 			// Cause Part ends
-
-			if (cause == 'yes' && effects == 'no'){
-				causeText=causeText+"}";
-				textToSave=causeText;
-			}
-			else if(cause == 'no' && effects == 'yes'){
+			if(cause == 'no'){
 				if(chiplet=='yes'){
 					effectText="CAUSE_EFFECT CHIPLETS "+chiplet_values+"{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "]"+effectText+"}";
 				}
@@ -497,7 +476,7 @@
 				}				
 				textToSave=effectText;
 			}
-			else if(cause == 'yes' && effects == 'yes'){
+			else if(cause == 'yes'){
 				effectText=effectText+"}";
 				textToSave=causeText+effectText;
 			}
@@ -517,7 +496,6 @@
 			var watchReg = document.getElementById("watchReg").value;
 			var label = document.getElementById("label").value;
 			var cause = document.getElementById("cause").value;
-			var effects = document.getElementById("effects").value;
 			
 			if(chiplet=='-1'){
 				alert("Please select if you want to apply for Chiplet or not");
@@ -531,10 +509,6 @@
 				return false;
 			}else if(watchReg==''){
 				alert("Please provide watch register address");
-				return false;
-			}
-			else if(effects=='-1'){
-				alert("Please select effect");
 				return false;
 			}
 			else if(cause=='-1'){
@@ -568,7 +542,7 @@
 
 		function addCause(that) {
 			var lastCount = $(that).parent().parent().find('.dropdown-parent-cause').last().data().count;
-			addDiv('causeDiv', `<div class="dropdown-cause-data-type" style="margin-left:-17px">Address type:<select id="dataTypeCause"><option value="-1">Select One</option><option value="regCause">Reg</option><option value="logicCause">Logic</option></select></div><label>Target Address</label><input type = "text" class ="targetAddr" style="margin-left:5px;width:90px" onblur="isValidhexTargetAddressCause(this)"/><div class="dropdown-cause-operation" style="margin-left:3px">Operation: <select id="operation" onchange="showProperTextBox(this)"><option value="-1">Select One</option><option value="AND">AND</option><option value="OR">OR</option><option value="EQUALTO">EQUALTO</option><option value="BIT_ON">BIT_ON</option><option value="ALLONES">ALLONES</option><option value="ALLZEROS">ALLZEROS</option></select></div><div class="dropdown-cause-literal-type" style="margin-left:-15px">Data Type:<select id="literalTypeCause"><option value="-1">Select One</option><option value="literalCause">Literal</option><option value="regCause">Reg</option></select></div><div class="dropdown-cause-bit-type" style="margin-left:-15px">No of BITS:<select id="noOfBitsCause"><option value="-1">Select One</option><option value="32">32</option><option value="64">64</option></select></div><label style="margin-left:2px" class="bitNumCause">BIT Number</label><input type = "text" class ="bitNumber" style="margin-left:6px;width:90px" onkeypress="return isNumber(event)"/><label style="margin-left:4px" class="box1Cause">Data</label><input type = "text" class ="box1" style="margin-left:4px;width:90px"/><label style="margin-left:17px" class="box2Cause">Mask</label><input type = "text" class ="box2" style="margin-left:5px;width:90px"/><input type="button" onclick="addCause(this)" value="+" style="margin-left:4px"/><input type="button" onclick="removeCause(this)" value="-" style="margin-left:6px"/>`, {
+			addDiv('causeDiv', `<div class="dropdown-cause-data-type" style="margin-left:-17px">Address type:<select id="dataTypeCause"><option value="-1">Select One</option><option value="regCause">Reg</option><option value="logicCause">Logic</option></select></div><label>Target Address</label><input type = "text" class ="targetAddr" style="margin-left:5px;width:90px" onblur="isValidhexTargetAddressCause(this)"/><div class="dropdown-cause-operation" style="margin-left:3px">Operation: <select id="operation" onchange="showProperTextBox(this)"><option value="-1">Select One</option><option value="AND">AND</option><option value="OR">OR</option><option value="EQUALTO">EQUALTO</option><option value="BIT_ON">BIT_ON</option><option value="ALLONES">ALLONES</option><option value="ALLZEROS">ALLZEROS</option></select></div><div class="dropdown-cause-literal-type" style="margin-left:-15px">Data Type:<select id="literalTypeCause"><option value="-1">Select One</option><option value="literalCause">Literal</option><option value="regCause">Reg</option></select></div><div class="dropdown-cause-bit-type" style="margin-left:-15px">BITS:<select id="noOfBitsCause"><option value="-1">Select One</option><option value="32">32</option><option value="64">64</option></select></div><label style="margin-left:2px" class="bitNumCause">BIT Number</label><input type = "text" class ="bitNumber" style="margin-left:6px;width:90px" onkeypress="return isNumber(event)"/><label style="margin-left:4px" class="box1Cause">Data</label><input type = "text" class ="box1" style="margin-left:4px;width:90px"/><label style="margin-left:17px" class="box2Cause">Mask</label><input type = "text" class ="box2" style="margin-left:5px;width:90px"/><input type="button" onclick="addCause(this)" value="+" style="margin-left:4px"/><input type="button" onclick="removeCause(this)" value="-" style="margin-left:6px"/>`, {
 				'class': 'dropdown-parent-cause',
 				'data-attr': 'attr',
 				'data-count': lastCount+1,
@@ -588,7 +562,7 @@
 		}
 		function addEffect(that) {
 			var lastCount = $(that).parent().parent().find('.dropdown-parent-effect').last().data().count;
-			addDiv('effectDiv', `<div class="dropdown-effect-data-type" style="margin-left:-17px">Address type:<select id="dataTypeEffect"><option value="-1">Select One</option><option value="regEffect">Reg</option><option value="logicEffect">Logic</option></select></div><label>Target Address</label><input type = "text" class ="targetEffectAddr" style="margin-left:5px;width:90px" onblur="isValidhexTargetAddressEffect(this)"/><div class="dropdown-effect-operation" style="margin-left:3px">Operation: <select id="operationEffect" onchange="showProperTextBoxEffect(this)"><option value="-1">Select One</option><option value="AND">AND</option><option value="OR">OR</option><option value="EQUALTO">EQUALTO</option><option value="BIT_ON">BIT_ON</option><option value="ALLONES">ALLONES</option><option value="ALLZEROS">ALLZEROS</option></select></div><div class="dropdown-effect-literal-type" style="margin-left:-15px">Data Type:<select id="literalTypeEffect"><option value="-1">Select One</option><option value="literalEffect">Literal</option><option value="regEffect">Reg</option></select></div><div class="dropdown-effect-bit-type" style="margin-left:-15px">No of BITS:<select id="noOfBitsEffect"><option value="-1">Select One</option><option value="32">32</option><option value="64">64</option></select></div><label style="margin-left:2px" class="bitNumEffect">BIT Number</label><input type = "text" class ="bitNumberEffect" style="margin-left:6px;width:90px" onkeypress="return isNumber(event)"/><label style="margin-left:4px" class="box1Eff">Data</label><input type = "text" class ="box1effect" style="margin-left:4px;width:90px"/><label style="margin-left:17px" class="box2Eff">Mask</label><input type = "text" class ="box2effect" style="margin-left:5px;width:90px"/><input type="button" onclick="addEffect(this)" value="+" style="margin-left:4px"/><input type="button" onclick="removeEffect(this)" value="-" style="margin-left:6px"/>`, {
+			addDiv('effectDiv', `<div class="dropdown-effect-data-type" style="margin-left:-17px">Address type:<select id="dataTypeEffect"><option value="-1">Select One</option><option value="regEffect">Reg</option><option value="logicEffect">Logic</option></select></div><label>Target Address</label><input type = "text" class ="targetEffectAddr" style="margin-left:5px;width:90px" onblur="isValidhexTargetAddressEffect(this)"/><div class="dropdown-effect-operation" style="margin-left:3px">Operation: <select id="operationEffect" onchange="showProperTextBoxEffect(this)"><option value="-1">Select One</option><option value="AND">AND</option><option value="OR">OR</option><option value="EQUALTO">EQUALTO</option><option value="BIT_ON">BIT_ON</option><option value="ALLONES">ALLONES</option><option value="ALLZEROS">ALLZEROS</option></select></div><div class="dropdown-effect-literal-type" style="margin-left:-15px">Data Type:<select id="literalTypeEffect"><option value="-1">Select One</option><option value="literalEffect">Literal</option><option value="regEffect">Reg</option></select></div><div class="dropdown-effect-bit-type" style="margin-left:-15px">BITS:<select id="noOfBitsEffect"><option value="-1">Select One</option><option value="32">32</option><option value="64">64</option></select></div><label style="margin-left:2px" class="bitNumEffect">BIT Number</label><input type = "text" class ="bitNumberEffect" style="margin-left:6px;width:90px" onkeypress="return isNumber(event)"/><label style="margin-left:4px" class="box1Eff">Data</label><input type = "text" class ="box1effect" style="margin-left:4px;width:90px"/><label style="margin-left:17px" class="box2Eff">Mask</label><input type = "text" class ="box2effect" style="margin-left:5px;width:90px"/><input type="button" onclick="addEffect(this)" value="+" style="margin-left:4px"/><input type="button" onclick="removeEffect(this)" value="-" style="margin-left:6px"/>`, {
 				'class': 'dropdown-parent-effect',
 				'data-attr': 'attr',
 				'data-count': lastCount+1,
@@ -694,24 +668,36 @@
 		//To test Hex Values in Watch Reg
 		function isValidhex(ele)
 		{
+			var value=ele.value;
 			var regExp = new RegExp(/^0x[0-9A-F]{1,16}$/i);
-			if (!regExp.test(ele.value)){
+			if(value.length!=10 && value.length!=18 ){
+				alert("Please enter valid value in Watch Reg");
+			}
+			else if (!regExp.test(ele.value)){
 				alert("Please enter valid value in Watch Reg");
 			}
 		}
 		//To test Hex Values in Target Address in Cause
 		function isValidhexTargetAddressCause(ele)
 		{
+			var value=ele.value;
 			var regExp = new RegExp(/^0x[0-9A-F]{1,16}$/i);
-			if (!regExp.test(ele.value)){
+			if(value.length!=10 && value.length!=18 ){
+				alert("Please enter valid value in Target Address in Cause");
+			}
+			else if (!regExp.test(ele.value)){
 				alert("Please enter valid value in Target Address in Cause");
 			}
 		}
 		//To test Hex Values in Target Address in Effect
 		function isValidhexTargetAddressEffect(ele)
 		{
+			var value=ele.value;
 			var regExp = new RegExp(/^0x[0-9A-F]{1,16}$/i);
-			if (!regExp.test(ele.value)){
+			if(value.length!=10 && value.length!=18 ){
+				alert("Please enter valid value in Target Address in Effect");
+			}
+			else if (!regExp.test(ele.value)){
 				alert("Please enter valid value in Target Address in Effect");
 			}
 		}
@@ -720,7 +706,7 @@
 		{
 			var value_length=value.length;
 			var regExp = new RegExp(/^0x[0-9A-F]{1,8}$/i);
-			if(value_length!=8){
+			if(value_length!=10){
 				return false;
 			}
 			else if (!regExp.test(value)){
@@ -733,7 +719,7 @@
 		{
 			var value_length=value.length;
 			var regExp = new RegExp(/^0x[0-9A-F]{1,16}$/i);
-			if(value_length!=16){
+			if(value_length!=18){
 				return false;
 			}
 			else if (!regExp.test(value)){
@@ -816,13 +802,9 @@
 			<label>Watch Reg</label>
 			<input type="text" id="watchReg" onblur="isValidhex(this)"/>
 		</div>
+	</br></br>
 		<div style="margin-left:1px">
-			Do you want to select the Effects:
-			<select id="effects" onchange="showEffectDiv()">
-				<option value="-1">Select One</option>
-				<option value="yes">Yes</option>
-				<option value="no">No</option>
-			</select>
+			Please add the Effects:
 		</div>
 		<div id="effectDiv">
 			<div class="dropdown-parent-effect" data-count=1 id="effectDiv">
@@ -857,7 +839,7 @@
 						</select>
 				</div>
 				<div class="dropdown-effect-bit-type" style="margin-left:-15px">
-						No of BITS:
+						BITS:
 						<select id="noOfBitsEffect">
 							<option value="-1">Select One</option>
 							<option value="32">32</option>
@@ -868,7 +850,7 @@
 				<input type="text" class="bitNumberEffect" style="width: 90px;" onkeypress="return isNumber(event)"/>
 				
 				<label class="box1Eff">Data</label>
-				<input type="text" style="width: 90px;" class="box1effect" />
+				<input type="text" style="width: 90px;" class="box1effect"/>
 
 				<label class="box2Eff" style="margin-left: 13px;">Mask</label>
 				<input type="text" style="width: 90px;" class="box2effect" />
@@ -876,6 +858,7 @@
 				<input type="button" onclick="addEffect(this)" value="+" />
 			</div>
 		</div>
+	</br></br>
 		<div class="dropdown" style="margin-left:-15px">
 			Do you want to select the Causes:
 			<select id="cause" onchange="showCauseDiv()">
@@ -917,7 +900,7 @@
 						</select>
 				</div>
 				<div class="dropdown-cause-bit-type" style="margin-left:-15px">
-						No of BITS:
+						BITS:
 						<select id="noOfBitsCause">
 							<option value="-1">Select One</option>
 							<option value="32">32</option>
