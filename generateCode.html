@@ -176,6 +176,40 @@
 						var noOfBitsEffect=effect_arr_val[5];
 						addrTypeEff=effect_arr_val[6];
 						
+						if(noOfBitsEffect=='32'){
+							if(!isValidhex_32(dataEffect)){
+								alert("Please enter valid 32 bit value in Data in Effect");
+								textToSave='';
+								return false;
+							}
+							else if(maskEffect!='' && !isValidhex_32(maskEffect)){
+								alert("Please enter valid 32 bit value in Mask in Effect");
+								textToSave='';
+								return false;
+							}
+						}
+						else if(noOfBitsEffect=='64'){
+							if(!isValidhex_64(dataEffect)){
+								alert("Please enter valid 64 bit value in Data in Effect");
+								textToSave='';
+								return false;
+							}else if(maskEffect!='' && !isValidhex_64(maskEffect)){
+								alert("Please enter valid 64 bit value in Mask in Effect");
+								textToSave='';
+								return false;
+							}
+							else{
+									var temp1=dataEffect.substring(2,10);
+									var temp2=dataEffect.substring(10);
+									dataEffect="0x"+temp1+" 0x"+temp2;
+									if(maskEffect!=''){
+										var temp3=maskEffect.substring(2,10);
+										var temp4=maskEffect.substring(10);
+										maskEffect="0x"+temp3+" 0x"+temp4;
+									}
+							}
+						}
+						
 						if(literalTypeEffect=='literalEffect'){
 							dataEffect="LITERAL("+noOfBitsEffect+","+dataEffect+")";
 							if(maskEffect==''){
@@ -307,6 +341,40 @@
 					var literalType=cause_arr_val[4];
 					var noOfBits=cause_arr_val[5];
 					addrType=cause_arr_val[6];
+
+					if(noOfBits=='32'){
+							if(!isValidhex_32(dataCause)){
+								alert("Please enter valid 32 bit value in Data in Cause");
+								textToSave='';
+								return false;
+							}
+							else if(maskCause!='' && !isValidhex_32(maskCause)){
+								alert("Please enter valid 32 bit value in Mask in Cause");
+								textToSave='';
+								return false;
+							}
+					}
+					else if(noOfBits=='64'){
+							if(!isValidhex_64(dataCause)){
+								alert("Please enter valid 64 bit value in Data in Cause");
+								textToSave='';
+								return false;
+							}else if(maskCause!='' && !isValidhex_64(maskCause)){
+								alert("Please enter valid 64 bit value in Mask in Cause");
+								textToSave='';
+								return false;
+							}
+							else{
+									var temp1=dataCause.substring(2,10);
+									var temp2=dataCause.substring(10);
+									dataCause="0x"+temp1+" 0x"+temp2;
+									if(maskCause!=''){
+										var temp3=maskCause.substring(2,10);
+										var temp4=maskCause.substring(10);
+										maskCause="0x"+temp3+" 0x"+temp4;
+									}
+							}
+					}
 
 					if(literalType=='literalCause'){
 						dataCause="LITERAL("+noOfBits+","+dataCause+")";
@@ -626,7 +694,7 @@
 		//To test Hex Values in Watch Reg
 		function isValidhex(ele)
 		{
-			var regExp = new RegExp(/^0x[0-9A-F]{1,4}$/i);
+			var regExp = new RegExp(/^0x[0-9A-F]{1,16}$/i);
 			if (!regExp.test(ele.value)){
 				alert("Please enter valid value in Watch Reg");
 			}
@@ -634,7 +702,7 @@
 		//To test Hex Values in Target Address in Cause
 		function isValidhexTargetAddressCause(ele)
 		{
-			var regExp = new RegExp(/^0x[0-9A-F]{1,4}$/i);
+			var regExp = new RegExp(/^0x[0-9A-F]{1,16}$/i);
 			if (!regExp.test(ele.value)){
 				alert("Please enter valid value in Target Address in Cause");
 			}
@@ -642,11 +710,39 @@
 		//To test Hex Values in Target Address in Effect
 		function isValidhexTargetAddressEffect(ele)
 		{
-			var regExp = new RegExp(/^0x[0-9A-F]{1,4}$/i);
+			var regExp = new RegExp(/^0x[0-9A-F]{1,16}$/i);
 			if (!regExp.test(ele.value)){
 				alert("Please enter valid value in Target Address in Effect");
 			}
 		}
+
+		function isValidhex_32(value)
+		{
+			var value_length=value.length;
+			var regExp = new RegExp(/^0x[0-9A-F]{1,8}$/i);
+			if(value_length!=8){
+				return false;
+			}
+			else if (!regExp.test(value)){
+				return false;
+			}else{
+				return true;
+			}
+		}
+		function isValidhex_64(value)
+		{
+			var value_length=value.length;
+			var regExp = new RegExp(/^0x[0-9A-F]{1,16}$/i);
+			if(value_length!=16){
+				return false;
+			}
+			else if (!regExp.test(value)){
+				return false;
+			}else{
+				return true;
+			}
+		}
+
 		function isValidBinaryNumberCause(ele)
 		{
 			var regExp = new RegExp('^[0-9]{1,10}$');
@@ -843,7 +939,7 @@
 		</div>
 
 		<div id="previewAction">
-			<textarea id="prevAction" rows="4" cols="50" readonly style="margin-left: 326px;margin-top: 29px;"></textarea>
+			<textarea id="prevAction" rows="25" cols="80" readonly style="margin-left: 326px;margin-top: 29px;"></textarea>
 		</div>
 		<br>
 		<br>
