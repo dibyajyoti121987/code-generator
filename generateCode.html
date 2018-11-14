@@ -185,18 +185,17 @@
 								operationEff="["+operationEff+",BUF,MASK]";
 							}
 						}else{
+							//alert("inside reg effect");
 							if(addrTypeEff=='logicEffect'){
-								dataEffect="REG("+dataEffect+")";
+								dataEffect="LOGIC("+dataEffect+")";
 								if(maskEffect==''){
 									operationEff="["+operationEff+",BUF]";
 								}else{
-									maskEffect="REG("+maskEffect+")";
+									maskEffect="LOGIC("+maskEffect+")";
 									operationEff="["+operationEff+",BUF,MASK]";
 								}
 							}else if(addrTypeEff=='regEffect'){
 								if(chiplet!='-1' && chiplet=='yes'){
-									dataEffect="REG("+dataEffect+")";
-								}else if(chiplet!='-1' && chiplet=='no'){
 									dataEffect="REG(MYCHIPLET,"+dataEffect+")";
 									if(maskEffect==''){
 										operationEff="["+operationEff+",BUF]";
@@ -204,6 +203,8 @@
 										maskEffect="REG(MYCHIPLET,"+maskEffect+")";
 										operationEff="["+operationEff+",BUF,MASK]";
 									}
+								}else if(chiplet!='-1' && chiplet=='no'){
+									dataEffect="REG("+dataEffect+")";
 									if(maskEffect==''){
 										operationEff="["+operationEff+",BUF]";
 									}else{
@@ -220,7 +221,7 @@
 					}
 					
 					if(addrTypeEff!='-1' && addrTypeEff=='logicEffect'){
-						addrEff="REG(" + addrEff + ")";
+						addrEff="LOGIC(" + addrEff + ")";
 					}
 					else if(addrTypeEff!='-1' && addrTypeEff=='regEffect'){
 						if(chiplet!='-1' && chiplet=='yes'){
@@ -317,17 +318,15 @@
 						}
     				}else{
 						if(addrType=='logicCause'){
-							dataCause="REG("+dataCause+")";
+							dataCause="LOGIC("+dataCause+")";
 						if(maskCause==''){
 							operation="["+operation+",BUF]";
 						}else{
-							maskCause="REG("+maskCause+")";
+							maskCause="LOGIC("+maskCause+")";
 							operation="["+operation+",BUF,MASK]";
 						}
 						}else if(addrType=='regCause'){
 							if(chiplet!='-1' && chiplet=='yes'){
-								dataCause="REG("+dataCause+")";
-							}else if(chiplet!='-1' && chiplet=='no'){
 								dataCause="REG(MYCHIPLET,"+dataCause+")";
 								if(maskCause==''){
 									operation="["+operation+",BUF]";
@@ -335,6 +334,8 @@
 									maskCause="REG(MYCHIPLET,"+maskCause+")";
 									operation="["+operation+",BUF,MASK]";
 								}
+							}else if(chiplet!='-1' && chiplet=='no'){
+								dataCause="REG("+dataCause+")";
 								if(maskCause==''){
 									operation="["+operation+",BUF]";
 								}else{
@@ -350,7 +351,7 @@
 					maskCause=cause_arr_val[3];
 				}
 				if(addrChoice!='-1' && addrChoice=='logic'){
-					watchReg="REG(" + watchReg + ")";
+					watchReg="LOGIC(" + watchReg + ")";
 				}
 				else if(addrChoice!='-1' && addrChoice=='reg'){
 					if(chiplet!='-1' && chiplet=='yes'){
@@ -360,7 +361,7 @@
 					}
 				}
 				if(addrType!='-1' && addrType=='logicCause'){
-					addr="REG(" + addr + ")";
+					addr="LOGIC(" + addr + ")";
 				}
 				else if(addrType!='-1' && addrType=='regCause'){
 					if(chiplet!='-1' && chiplet=='yes'){
@@ -386,9 +387,9 @@
 							}	
 						}else{
 							if(chiplet=='yes'){
-								causeText="CAUSE_EFFECT CHIPLETS "+chiplet_values+"{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "] \nCAUSE: TARGET=[" + addr + "] OP=" + operation + " DATA=[" + maskCause + "]";
+								causeText="CAUSE_EFFECT CHIPLETS "+chiplet_values+"{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "] \nCAUSE: TARGET=[" + addr + "] OP=" + operation + " DATA=[" + dataCause + "]";
 							}else{
-								causeText="CAUSE_EFFECT{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "] \nCAUSE: TARGET=[" + addr + "] OP=" + operation + " DATA=[" + maskCause + "]";
+								causeText="CAUSE_EFFECT{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "] \nCAUSE: TARGET=[" + addr + "] OP=" + operation + " DATA=[" + dataCause + "]";
 							}
 						}
 					}
