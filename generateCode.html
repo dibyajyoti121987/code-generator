@@ -51,9 +51,20 @@
 			
 			$('#operation').prop('selectedIndex',0);
 			$('#operationEffect').prop('selectedIndex',0);
+			$('#dataTypeEffect').prop('selectedIndex',0);
+			$('#literalTypeEffect').prop('selectedIndex',0);
+			$('#noOfBitsEffect').prop('selectedIndex',0);
+			$('#dataTypeCause').prop('selectedIndex',0);
+			$('#literalTypeCause').prop('selectedIndex',0);
+			$('#noOfBitsCause').prop('selectedIndex',0);
 			
 			$('.dropdown-parent-cause input[type="text"]').val('');
 			$('.dropdown-parent-effect input[type="text"]').val('');
+
+			$('input[type=checkbox]').each(function() 
+			{ 
+				this.checked = false; 
+			}); 
 
 			// Removing newly added cause and effect rows
 			if(resetFlag=="Y"){
@@ -137,9 +148,7 @@
 							effectDiv_values += '|'+ text1 +','+ text2 +','+ dataEffect+','+maskEffect+','+ literalTypeEff+','+noOfBitsEff+','+addrTypeEff;
 					    }
 						else{
-							var text3 = $(this).find('.box1effect').val();
-							var text4 = $(this).find('.box2effect').val();
-							effectDiv_values += '|'+ text1 +','+ text2 +','+ text3+','+text4;
+							effectDiv_values += '|'+ text1 +','+ text2;
 						}						
 				});
 
@@ -238,10 +247,6 @@
 							}
 						}
 					}
-					else{
-						dataEffect=effect_arr_val[2];
-						maskEffect=effect_arr_val[3];
-					}
 					
 					if(addrTypeEff!='-1' && addrTypeEff=='logicEffect'){
 						addrEff="LOGIC(" + addrEff + ")";
@@ -255,7 +260,7 @@
 					}
 					
 					if(effectText==""){
-						if(operationEff=='BIT_ON'){
+						if(operationEff=='BIT,ON' || operationEff=='BIT,OFF'){
 							effectText="\nEFFECT: TARGET=[" + addrEff + "] OP=[" + operationEff + "] BIT=[" + bitNumberEff + "]";
 						}
 						else if(operationEff.includes('EQUALTO') || operationEff.includes('AND') || operationEff.includes('OR')){
@@ -265,11 +270,11 @@
 								effectText="\nEFFECT: TARGET=[" + addrEff + "] OP="+ operationEff +" DATA=[" + dataEffect + "]";
 							}
 					    }else{
-							effectText="\nEFFECT: TARGET=[" + addrEff + "] OP=[" + operationEff + "] DATA=[" + dataEffect + "] MASK=[" + maskEffect + "]";
+							effectText="\nEFFECT: TARGET=[" + addrEff + "] OP=[" + operationEff + "]";
 						}						
 					}
 					else{
-						if(operationEff=='BIT_ON'){
+						if(operationEff=='BIT,ON' || operationEff=='BIT,OFF'){
 							effectText=effectText+"\nEFFECT: TARGET=[" + addrEff + "] OP=[" + operationEff + "] BIT=[" + bitNumberEff + "]";
 					}
 					else if(operationEff.includes('EQUALTO') || operationEff.includes('AND') || operationEff.includes('OR')){
@@ -280,7 +285,7 @@
 						}
 					}
 					else{
-						 effectText=effectText+"\nEFFECT: TARGET=[" + addrEff + "] OP=[" + operationEff + "] DATA=[" + dataEffect + "] MASK=[" + maskEffect + "]";
+						 effectText=effectText+"\nEFFECT: TARGET=[" + addrEff + "] OP=[" + operationEff + "]";
 					    }						
 				    }
 				}
@@ -324,7 +329,7 @@
 				if(operation=='BIT_ON'){
 					var bitNumber=cause_arr_val[2];
 					operation='BIT,ON';
-				}else if(operation=='BIT_ON'){
+				}else if(operation=='BIT_OFF'){
 					var bitNumber=cause_arr_val[2];
 					operation='BIT,OFF';
 				}
@@ -408,10 +413,6 @@
 						}
     				}
 				}
-				else{
-					dataCause=cause_arr_val[2];
-					maskCause=cause_arr_val[3];
-				}
 				if(addrChoice!='-1' && addrChoice=='logic'){
 					watchReg="LOGIC(" + watchReg + ")";
 				}
@@ -434,7 +435,7 @@
 				}
 
 				if(causeText==""){
-					if(operation=='BIT_ON'){
+					if(operation=='BIT,ON' || operation=='BIT,OFF'){
 						if(chiplet=='yes'){
 							causeText="CAUSE_EFFECT CHIPLETS "+chiplet_values+"{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "] \nCAUSE: TARGET=[" + addr + "] OP=[" + operation + "] BIT=[" + bitNumber + "]";
 						}else{
@@ -457,13 +458,13 @@
 					}
 					else{
 						if(chiplet=='yes'){
-							causeText="CAUSE_EFFECT CHIPLETS "+chiplet_values+"{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "] \nCAUSE: TARGET=[" + addr + "] OP=[" + operation + "] DATA=[" + dataCause + "] MASK=[" + maskCause + "]";
+							causeText="CAUSE_EFFECT CHIPLETS "+chiplet_values+"{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "] \nCAUSE: TARGET=[" + addr + "] OP=[" + operation + "]";
 						}else{
-							causeText="CAUSE_EFFECT{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "] \nCAUSE: TARGET=[" + addr + "] OP=[" + operation + "] DATA=[" + dataCause + "] MASK=[" + maskCause + "]";
+							causeText="CAUSE_EFFECT{\nWATCH=[" + watchReg + "] \nLABEL=[" + label + "] \nCAUSE: TARGET=[" + addr + "] OP=[" + operation + "]";
 						}						
 					}
 				}else{
-					if(operation=='BIT_ON'){
+					if(operation=='BIT,ON' || operation=='BIT,OFF'){
 						causeText=causeText+"\nCAUSE: TARGET=[" + addr + "] OP=[" + operation + "] BIT=[" + bitNumber + "]";
 					}else if(operation.includes('EQUALTO') || operation.includes('AND') || operation.includes('OR')	){
 						if(operation.includes('MASK')){
@@ -472,7 +473,7 @@
 							causeText=causeText+"\nCAUSE: TARGET=[" + addr + "] OP=" + operation + " DATA=[" + dataCause + "]";
 						}
 					}else{
-						causeText=causeText+"\nCAUSE: TARGET=[" + addr + "] OP=[" + operation + "] DATA=[" + dataCause + "] MASK=[" + maskCause + "]";
+						causeText=causeText+"\nCAUSE: TARGET=[" + addr + "] OP=[" + operation + "]";
 					}					
 				}
 			}
@@ -552,7 +553,7 @@
 
 		function addCause(that) {
 			var lastCount = $(that).parent().parent().find('.dropdown-parent-cause').last().data().count;
-			addDiv('causeDiv', `<div class="dropdown-cause-data-type" style="margin-left:-17px">Address type:<select id="dataTypeCause"><option value="-1">Select One</option><option value="regCause">Reg</option><option value="logicCause">Logic</option></select></div><label>Target Address</label><input type = "text" class ="targetAddr" style="margin-left:5px;width:90px" onblur="isValidhexTargetAddressCause(this)"/><div class="dropdown-cause-operation" style="margin-left:3px">Operation: <select id="operation" onchange="showProperTextBox(this)"><option value="-1">Select One</option><option value="AND">AND</option><option value="OR">OR</option><option value="EQUALTO">EQUALTO</option><option value="BIT_ON">BIT_ON</option><option value="ALLONES">ALLONES</option><option value="ALLZEROS">ALLZEROS</option></select></div><div class="dropdown-cause-literal-type" style="margin-left:-15px">Data Type:<select id="literalTypeCause"><option value="-1">Select One</option><option value="literalCause">Literal</option><option value="regCause">Reg</option></select></div><div class="dropdown-cause-bit-type" style="margin-left:-15px">BITS:<select id="noOfBitsCause"><option value="-1">Select One</option><option value="32">32</option><option value="64">64</option></select></div><label style="margin-left:2px" class="bitNumCause">BIT Number</label><input type = "text" class ="bitNumber" style="margin-left:6px;width:90px" onkeypress="return isNumber(event)"/><label style="margin-left:4px" class="box1Cause">Data</label><input type = "text" class ="box1" style="margin-left:4px;width:90px"/><label style="margin-left:17px" class="box2Cause">Mask</label><input type = "text" class ="box2" style="margin-left:5px;width:90px"/><input type="button" onclick="addCause(this)" value="+" style="margin-left:4px"/><input type="button" onclick="removeCause(this)" value="-" style="margin-left:6px"/>`, {
+			addDiv('causeDiv', `<div class="dropdown-cause-data-type" style="margin-left:-17px">Address type:<select id="dataTypeCause"><option value="-1">Select One</option><option value="regCause">Reg</option><option value="logicCause">Logic</option></select></div><label>Target Address</label><input type = "text" class ="targetAddr" style="margin-left:5px;width:90px" onblur="isValidhexTargetAddressCause(this)"/><div class="dropdown-cause-operation" style="margin-left:3px">Operation: <select id="operation" onchange="showProperTextBox(this)"><option value="-1">Select One</option><option value="AND">AND</option><option value="OR">OR</option><option value="EQUALTO">EQUALTO</option><option value="BIT_ON">BIT_ON</option><option value="BIT_OFF">BIT_OFF</option><option value="ALLONES">ALLONES</option><option value="ALLZEROS">ALLZEROS</option></select></div><div class="dropdown-cause-literal-type" style="margin-left:-15px">Data Type:<select id="literalTypeCause"><option value="-1">Select One</option><option value="literalCause">Literal</option><option value="regCause">Reg</option></select></div><div class="dropdown-cause-bit-type" style="margin-left:-15px">BITS:<select id="noOfBitsCause"><option value="-1">Select One</option><option value="32">32</option><option value="64">64</option></select></div><label style="margin-left:2px" class="bitNumCause">BIT Number</label><input type = "text" class ="bitNumber" style="margin-left:6px;width:90px" onkeypress="return isNumber(event)"/><label style="margin-left:4px" class="box1Cause">Data</label><input type = "text" class ="box1" style="margin-left:4px;width:90px"/><label style="margin-left:17px" class="box2Cause">Mask</label><input type = "text" class ="box2" style="margin-left:5px;width:90px"/><input type="button" onclick="addCause(this)" value="+" style="margin-left:4px"/><input type="button" onclick="removeCause(this)" value="-" style="margin-left:6px"/>`, {
 				'class': 'dropdown-parent-cause',
 				'data-attr': 'attr',
 				'data-count': lastCount+1,
@@ -572,7 +573,7 @@
 		}
 		function addEffect(that) {
 			var lastCount = $(that).parent().parent().find('.dropdown-parent-effect').last().data().count;
-			addDiv('effectDiv', `<div class="dropdown-effect-data-type" style="margin-left:-17px">Address type:<select id="dataTypeEffect"><option value="-1">Select One</option><option value="regEffect">Reg</option><option value="logicEffect">Logic</option></select></div><label>Target Address</label><input type = "text" class ="targetEffectAddr" style="margin-left:5px;width:90px" onblur="isValidhexTargetAddressEffect(this)"/><div class="dropdown-effect-operation" style="margin-left:3px">Operation: <select id="operationEffect" onchange="showProperTextBoxEffect(this)"><option value="-1">Select One</option><option value="AND">AND</option><option value="OR">OR</option><option value="EQUALTO">EQUALTO</option><option value="BIT_ON">BIT_ON</option><option value="ALLONES">ALLONES</option><option value="ALLZEROS">ALLZEROS</option></select></div><div class="dropdown-effect-literal-type" style="margin-left:-15px">Data Type:<select id="literalTypeEffect"><option value="-1">Select One</option><option value="literalEffect">Literal</option><option value="regEffect">Reg</option></select></div><div class="dropdown-effect-bit-type" style="margin-left:-15px">BITS:<select id="noOfBitsEffect"><option value="-1">Select One</option><option value="32">32</option><option value="64">64</option></select></div><label style="margin-left:2px" class="bitNumEffect">BIT Number</label><input type = "text" class ="bitNumberEffect" style="margin-left:6px;width:90px" onkeypress="return isNumber(event)"/><label style="margin-left:4px" class="box1Eff">Data</label><input type = "text" class ="box1effect" style="margin-left:4px;width:90px"/><label style="margin-left:17px" class="box2Eff">Mask</label><input type = "text" class ="box2effect" style="margin-left:5px;width:90px"/><input type="button" onclick="addEffect(this)" value="+" style="margin-left:4px"/><input type="button" onclick="removeEffect(this)" value="-" style="margin-left:6px"/>`, {
+			addDiv('effectDiv', `<div class="dropdown-effect-data-type" style="margin-left:-17px">Address type:<select id="dataTypeEffect"><option value="-1">Select One</option><option value="regEffect">Reg</option><option value="logicEffect">Logic</option></select></div><label>Target Address</label><input type = "text" class ="targetEffectAddr" style="margin-left:5px;width:90px" onblur="isValidhexTargetAddressEffect(this)"/><div class="dropdown-effect-operation" style="margin-left:3px">Operation: <select id="operationEffect" onchange="showProperTextBoxEffect(this)"><option value="-1">Select One</option><option value="AND">AND</option><option value="OR">OR</option><option value="EQUALTO">EQUALTO</option><option value="BIT_ON">BIT_ON</option><option value="BIT_OFF">BIT_OFF</option><option value="ALLONES">ALLONES</option><option value="ALLZEROS">ALLZEROS</option></select></div><div class="dropdown-effect-literal-type" style="margin-left:-15px">Data Type:<select id="literalTypeEffect"><option value="-1">Select One</option><option value="literalEffect">Literal</option><option value="regEffect">Reg</option></select></div><div class="dropdown-effect-bit-type" style="margin-left:-15px">BITS:<select id="noOfBitsEffect"><option value="-1">Select One</option><option value="32">32</option><option value="64">64</option></select></div><label style="margin-left:2px" class="bitNumEffect">BIT Number</label><input type = "text" class ="bitNumberEffect" style="margin-left:6px;width:90px" onkeypress="return isNumber(event)"/><label style="margin-left:4px" class="box1Eff">Data</label><input type = "text" class ="box1effect" style="margin-left:4px;width:90px"/><label style="margin-left:17px" class="box2Eff">Mask</label><input type = "text" class ="box2effect" style="margin-left:5px;width:90px"/><input type="button" onclick="addEffect(this)" value="+" style="margin-left:4px"/><input type="button" onclick="removeEffect(this)" value="-" style="margin-left:6px"/>`, {
 				'class': 'dropdown-parent-effect',
 				'data-attr': 'attr',
 				'data-count': lastCount+1,
@@ -632,7 +633,7 @@
 				$("#"+divid+" .box2Cause").show();
 				$("#"+divid+" .dropdown-cause-bit-type").show();
 				$("#"+divid+" .dropdown-cause-literal-type").show();
-			}else if(dd_val=='-1'){
+			}else{
 				$("#"+divid+" .bitNumber").hide();
 				$("#"+divid+" .bitNumCause").hide();
 				$("#"+divid+" .box1").hide();
@@ -664,7 +665,7 @@
 				$("#"+divid+" .box2effect").show();
 				$("#"+divid+" .dropdown-effect-bit-type").show();
 				$("#"+divid+" .dropdown-effect-literal-type").show();
-			}else if(dd_val=='-1'){
+			}else{
 				$("#"+divid+" .bitNumEffect").hide();
 				$("#"+divid+" .bitNumberEffect").hide();
 				$("#"+divid+" .box1Eff").hide();
@@ -812,7 +813,69 @@
 			<label>Watch Reg</label>
 			<input type="text" id="watchReg" onblur="isValidhex(this)"/>
 		</div>
-	</br></br>
+	<div class="dropdown" style="margin-left:-15px">
+		Do you want to select the Causes:
+		<select id="cause" onchange="showCauseDiv()">
+			<option value="-1">Select One</option>
+			<option value="yes">Yes</option>
+			<option value="no">No</option>
+		</select>
+	</div>
+	<div id="causeDiv">
+		<div class="dropdown-parent-cause" data-count=1 id="causeDiv">
+			<div class="dropdown-cause-data-type" style="margin-left:-15px">
+						Address type:
+						<select id="dataTypeCause">
+							<option value="-1">Select One</option>
+							<option value="regCause">Reg</option>
+							<option value="logicCause">Logic</option>
+						</select>
+			</div>
+			<label>Target Address</label>
+			<input type="text" class="targetAddr" style="width: 90px;" onblur="isValidhexTargetAddressCause(this)"/>
+			<div class="dropdown-cause-operation">
+				Operation:
+				<select id="operation" onchange="showProperTextBox(this)">
+					<option value="-1">Select One</option>
+					<option value="AND">AND</option>
+					<option value="OR">OR</option>
+					<option value="EQUALTO">EQUALTO</option>
+					<option value="BIT_ON">BIT_ON</option>
+					<option value="BIT_OFF">BIT_OFF</option>
+					<option value="ALLONES">ALLONES</option>
+					<option value="ALLZEROS">ALLZEROS</option>
+				</select>
+			</div>
+			<div class="dropdown-cause-literal-type" style="margin-left:-15px">
+					Data Type:
+					<select id="literalTypeCause">
+						<option value="-1">Select One</option>
+						<option value="literalCause">Literal</option>
+						<option value="regCause">Reg</option>
+					</select>
+			</div>
+			<div class="dropdown-cause-bit-type" style="margin-left:-15px">
+					BITS:
+					<select id="noOfBitsCause">
+						<option value="-1">Select One</option>
+						<option value="32">32</option>
+						<option value="64">64</option>
+				</select>
+			</div>
+
+			<label class="bitNumCause">BIT Number</label>
+			<input type="text" class="bitNumber" onkeypress="return isNumber(event)"/>
+
+			<label class="box1Cause">Data</label>
+			<input type="text" style="width: 90px;" class="box1" />
+
+			<label class="box2Cause" style="margin-left: 13px;">Mask</label>
+			<input type="text"  style="width: 90px;" class="box2" />
+
+			<input data-count="1" type="button" onclick="addCause(this)" value="+" />
+		</div>
+	</div>
+		</br></br>
 		<div style="margin-left:1px">
 			Please add the Effects:
 		</div>
@@ -836,6 +899,7 @@
 						<option value="OR">OR</option>
 						<option value="EQUALTO">EQUALTO</option>
 						<option value="BIT_ON">BIT_ON</option>
+						<option value="BIT_OFF">BIT_OFF</option>
 						<option value="ALLONES">ALLONES</option>
 						<option value="ALLZEROS">ALLZEROS</option>
 					</select>
@@ -868,69 +932,7 @@
 				<input type="button" onclick="addEffect(this)" value="+" />
 			</div>
 		</div>
-	</br></br>
-		<div class="dropdown" style="margin-left:-15px">
-			Do you want to select the Causes:
-			<select id="cause" onchange="showCauseDiv()">
-				<option value="-1">Select One</option>
-				<option value="yes">Yes</option>
-				<option value="no">No</option>
-			</select>
-		</div>
-		<div id="causeDiv">
-			<div class="dropdown-parent-cause" data-count=1 id="causeDiv">
-				<div class="dropdown-cause-data-type" style="margin-left:-15px">
-							Address type:
-							<select id="dataTypeCause">
-								<option value="-1">Select One</option>
-								<option value="regCause">Reg</option>
-								<option value="logicCause">Logic</option>
-							</select>
-				</div>
-				<label>Target Address</label>
-				<input type="text" class="targetAddr" style="width: 90px;" onblur="isValidhexTargetAddressCause(this)"/>
-				<div class="dropdown-cause-operation">
-					Operation:
-					<select id="operation" onchange="showProperTextBox(this)">
-						<option value="-1">Select One</option>
-						<option value="AND">AND</option>
-						<option value="OR">OR</option>
-						<option value="EQUALTO">EQUALTO</option>
-						<option value="BIT_ON">BIT_ON</option>
-						<option value="ALLONES">ALLONES</option>
-						<option value="ALLZEROS">ALLZEROS</option>
-					</select>
-				</div>
-				<div class="dropdown-cause-literal-type" style="margin-left:-15px">
-						Data Type:
-						<select id="literalTypeCause">
-							<option value="-1">Select One</option>
-							<option value="literalCause">Literal</option>
-							<option value="regCause">Reg</option>
-						</select>
-				</div>
-				<div class="dropdown-cause-bit-type" style="margin-left:-15px">
-						BITS:
-						<select id="noOfBitsCause">
-							<option value="-1">Select One</option>
-							<option value="32">32</option>
-							<option value="64">64</option>
-					</select>
-				</div>
-
-				<label class="bitNumCause">BIT Number</label>
-				<input type="text" class="bitNumber" onkeypress="return isNumber(event)"/>
-
-				<label class="box1Cause">Data</label>
-				<input type="text" style="width: 90px;" class="box1" />
-
-				<label class="box2Cause" style="margin-left: 13px;">Mask</label>
-				<input type="text"  style="width: 90px;" class="box2" />
-
-				<input data-count="1" type="button" onclick="addCause(this)" value="+" />
-			</div>
-		</div>
-
+	
 		<div id="previewAction">
 			<textarea id="prevAction" rows="25" cols="80" readonly style="margin-left: 326px;margin-top: 29px;"></textarea>
 		</div>
