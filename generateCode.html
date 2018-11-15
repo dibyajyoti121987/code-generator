@@ -126,7 +126,7 @@
 						var text1 = $(this).find('.targetEffectAddr').val();
 						var text2 = $(this).find('#operationEffect').val();
 
-						if(text2=='BIT_ON'){
+						if(text2=='BIT_ON' || text2=='BIT_OFF'){
 							var text3 = $(this).find('.bitNumberEffect').val();
 							effectDiv_values += '|'+ text1 +','+ text2 +','+ text3;
 						}else if(text2=='EQUALTO' || text2=='AND' || text2=='OR'){
@@ -152,7 +152,12 @@
 					var operationEff=effect_arr_val[1];
 					if(operationEff=='BIT_ON'){
 						var bitNumberEff=effect_arr_val[2];
-					}else if(operationEff=='EQUALTO' || operationEff=='AND' || operationEff=='OR'){
+						operationEff='BIT,ON';
+					}else if(operationEff=='BIT_OFF'){
+						var bitNumberEff=effect_arr_val[2];
+						operationEff='BIT,OFF';
+					}
+					else if(operationEff=='EQUALTO' || operationEff=='AND' || operationEff=='OR'){
 						// Logic to set values when EQUALTO is the option: values to set watchReg, addr, operation
 						dataEffect=effect_arr_val[2];
 						maskEffect=effect_arr_val[3];
@@ -293,7 +298,7 @@
 					var text1 = $(this).find('.targetAddr').val();
 					var text2 = $(this).find('#operation').val();
 					
-					if(text2=='BIT_ON'){
+					if(text2=='BIT_ON' || text2=='BIT_OFF' ){
 						var text3 = $(this).find('.bitNumber').val();
 						causeDiv_values +='|'+ text1 +','+ text2 +','+ text3;
 					}else if(text2=='EQUALTO' || text2=='AND' || text2=='OR'){
@@ -318,7 +323,12 @@
 				var operation=cause_arr_val[1];
 				if(operation=='BIT_ON'){
 					var bitNumber=cause_arr_val[2];
-				}else if(operation=='EQUALTO' || operation=='AND' || operation=='OR'){
+					operation='BIT,ON';
+				}else if(operation=='BIT_ON'){
+					var bitNumber=cause_arr_val[2];
+					operation='BIT,OFF';
+				}
+				else if(operation=='EQUALTO' || operation=='AND' || operation=='OR'){
 					// Logic to set values when EQUALTO is the option: values to set watchReg, addr, operation, box1, box2
 					dataCause=cause_arr_val[2];
 					maskCause=cause_arr_val[3];
@@ -604,7 +614,7 @@
 		function showProperTextBox(that){
 			var divid=$(that).parents(':eq(1)').attr("id");
 			var dd_val=$(that).val();
-			if(dd_val=='BIT_ON'){
+			if(dd_val=='BIT_ON' || dd_val=='BIT_OFF'){
 				$("#"+divid+" .bitNumber").show();
 				$("#"+divid+" .bitNumCause").show();
 				$("#"+divid+" .box1").hide();
@@ -636,7 +646,7 @@
 		function showProperTextBoxEffect(that){
 			var divid=$(that).parents(':eq(1)').attr("id");
 			var dd_val=$(that).val();
-			if(dd_val=='BIT_ON'){
+			if(dd_val=='BIT_ON' || dd_val=='BIT_OFF'){
 				$("#"+divid+" .bitNumEffect").show();
 				$("#"+divid+" .bitNumberEffect").show();
 				$("#"+divid+" .box1Eff").hide();
