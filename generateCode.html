@@ -20,9 +20,9 @@
 			document.getElementById("cause").value = "-1";
 			document.getElementById("watchReg").value = "";
 			document.getElementById("label").value = "";
-			document.getElementsByName("targetAddr").value = "";
-			document.getElementById("operation").value = "-1";
-			document.getElementsByName("bitNumber").value = "";
+			//document.getElementsByName("targetAddr").value = "";
+			//document.getElementById("operation").value = "-1";
+			//document.getElementsByName("bitNumber").value = "";
 			document.getElementsByName("targetEffectAddr").value = "";
 			document.getElementById("operationEffect").value = "-1";
 			document.getElementsByName("bitNumberEffect").value = "";
@@ -108,23 +108,46 @@
 			var watchReg = document.getElementById("watchReg").value;
 
 			if(chiplet=='-1'){
+				
+				textToSave="";
+				document.getElementById("previewAction").style.display = "none";
 				alert("Please select if you want to apply for Chiplet or not");
 				return false;
 			}else if(label==''){
+				
+				textToSave="";
+				document.getElementById("previewAction").style.display = "none";
 				alert("Please provide label value");
 				return false;
 			}
 			else if(addrChoice=='-1'){
+				
+				textToSave="";
+				document.getElementById("previewAction").style.display = "none";
 				alert("Please select your choice of address");
 				return false;
 			}else if(watchReg==''){
+				
+				textToSave="";
+				document.getElementById("previewAction").style.display = "none";
 				alert("Please provide watch register address");
 				return false;
+			}else if(watchReg!='' && !isValidhexValueWatchReg(watchReg)){
+				
+				textToSave='';
+				document.getElementById("previewAction").style.display = "none";
+				alert("Please enter valid 32 or 64 bit value in Watch Register");
+				return false;
 			}
+			
 			else if(cause=='-1'){
+			
+				textToSave="";
+				document.getElementById("previewAction").style.display = "none";
 				alert("Please choose if you want to select cause or not");
 				return false;
 			}
+
 			document.getElementById("previewAction").style.display = "block";
 			
 				//Get Effect values
@@ -139,16 +162,38 @@
 
 						if(text2=='BIT_ON' || text2=='BIT_OFF'){
 							var text3 = $(this).find('.bitNumberEffect').val();
-							effectDiv_values += '|'+ text1 +','+ text2 +','+ text3;
+							
+							if(addrTypeEff=='-1' || text1=='' || text2=='-1' || text3==''){
+								alert("Please fill up details in Row in Effects before Preview");
+								textToSave="";
+								document.getElementById("previewAction").style.display = "none";
+								return false;
+							}
+							
+							effectDiv_values += '|'+ text1 +','+ text2 +','+ text3 +','+ addrTypeEff;
 						}else if(text2=='EQUALTO' || text2=='AND' || text2=='OR'){
 							dataEffect=$(this).find('.box1effect').val();
 							maskEffect=$(this).find('.box2effect').val();
 							var literalTypeEff=$(this).find('#literalTypeEffect').val();
 							var noOfBitsEff= $(this).find('#noOfBitsEffect').val();
+							
+							if(addrTypeEff=='-1' || text1=='' || text2=='-1' || dataEffect=='' || literalTypeEff=='-1' || noOfBitsEff=='-1'){
+								alert("Please fill up details in Row in Effects before Preview");
+								textToSave="";
+								document.getElementById("previewAction").style.display = "none";
+								return false;
+							}
+							
 							effectDiv_values += '|'+ text1 +','+ text2 +','+ dataEffect+','+maskEffect+','+ literalTypeEff+','+noOfBitsEff+','+addrTypeEff;
 					    }
 						else{
-							effectDiv_values += '|'+ text1 +','+ text2;
+							if(addrTypeEff=='-1' || text1=='' || text2=='-1'){
+								alert("Please fill up details in Row in Effects before Preview");
+								textToSave="";
+								document.getElementById("previewAction").style.display = "none";
+								return false;
+							}
+							effectDiv_values += '|'+ text1 +','+ text2 +','+ addrTypeEff;
 						}						
 				});
 
@@ -159,12 +204,21 @@
 					var effect_arr_val=effect_arr[i].split(",");
 					var addrEff=effect_arr_val[0];
 					var operationEff=effect_arr_val[1];
+					
+					if(!isValidhexValueTargetEffect(addrEff)){
+						alert("Please enter valid 32 or 64 bit value in Target Address in Effect");
+						textToSave='';
+						document.getElementById("previewAction").style.display = "none";
+					}
+
 					if(operationEff=='BIT_ON'){
 						var bitNumberEff=effect_arr_val[2];
 						operationEff='BIT,ON';
+						addrTypeEff=effect_arr_val[3];
 					}else if(operationEff=='BIT_OFF'){
 						var bitNumberEff=effect_arr_val[2];
 						operationEff='BIT,OFF';
+						addrTypeEff=effect_arr_val[3];
 					}
 					else if(operationEff=='EQUALTO' || operationEff=='AND' || operationEff=='OR'){
 						// Logic to set values when EQUALTO is the option: values to set watchReg, addr, operation
@@ -246,6 +300,8 @@
 								}
 							}
 						}
+					}else{
+						addrTypeEff=effect_arr_val[2];
 					}
 					
 					if(addrTypeEff!='-1' && addrTypeEff=='logicEffect'){
@@ -293,6 +349,8 @@
 			// Effect part ends	
 			
 			// Get Cause Values
+		if(cause=='yes')
+		{
 			var causeDiv_values = '';
 			var addrType='';
 			var dataCause='';
@@ -305,17 +363,39 @@
 					
 					if(text2=='BIT_ON' || text2=='BIT_OFF' ){
 						var text3 = $(this).find('.bitNumber').val();
-						causeDiv_values +='|'+ text1 +','+ text2 +','+ text3;
+
+						if(addrType=='-1' || text1=='' || text2=='-1' || text3==''){
+							alert("Please fill up details in Row in Cause before Preview");
+							textToSave="";
+							document.getElementById("previewAction").style.display = "none";
+							return false;
+						}
+
+						causeDiv_values +='|'+ text1 +','+ text2 +','+ text3+','+addrType;
 					}else if(text2=='EQUALTO' || text2=='AND' || text2=='OR'){
 						var literalType=$(this).find('#literalTypeCause').val();
 						var noOfBits= $(this).find('#noOfBitsCause').val();
 						dataCause=$(this).find('.box1').val();
 						maskCause=$(this).find('.box2').val();
+						
+						if(addrType=='-1' || text1=='' || text2=='-1' || literalType=='-1' || noOfBits=='-1' || dataCause==''){
+							alert("Please fill up details in Row in Cause before Preview");
+							textToSave="";
+							document.getElementById("previewAction").style.display = "none";
+							return false;
+						}
+
 						causeDiv_values += '|'+ text1 +','+ text2 +','+ dataCause+','+maskCause+','+ literalType+','+noOfBits+','+addrType;
 					}else {
-						var text3 = $(this).find('.box1').val();
-						var text4 = $(this).find('.box2').val();
-						causeDiv_values += '|'+ text1 +','+ text2 +','+ text3+','+text4;
+						
+						if(addrType=='-1' || text1=='' || text2=='-1'){
+							alert("Please fill up details in Row in Cause before Preview");
+							textToSave="";
+							document.getElementById("previewAction").style.display = "none";
+							return false;
+						}
+
+						causeDiv_values += '|'+ text1 +','+ text2+','+addrType;
 					}
 				});
 	
@@ -326,12 +406,19 @@
 				var cause_arr_val=cause_arr[i].split(",");
 				var addr=cause_arr_val[0];
 				var operation=cause_arr_val[1];
+				if(!isValidhexValueTargetCause(addr)){
+					alert("Please enter valid 32 or 64 bit value in Target Address in Cause");
+					textToSave='';
+					document.getElementById("previewAction").style.display = "none";
+				}
 				if(operation=='BIT_ON'){
 					var bitNumber=cause_arr_val[2];
 					operation='BIT,ON';
+					addrType=cause_arr_val[3];
 				}else if(operation=='BIT_OFF'){
 					var bitNumber=cause_arr_val[2];
 					operation='BIT,OFF';
+					addrType=cause_arr_val[3];
 				}
 				else if(operation=='EQUALTO' || operation=='AND' || operation=='OR'){
 					// Logic to set values when EQUALTO is the option: values to set watchReg, addr, operation, box1, box2
@@ -345,23 +432,27 @@
 							if(!isValidhex_32(dataCause)){
 								alert("Please enter valid 32 bit value in Data in Cause");
 								textToSave='';
-								return false;
+								document.getElementById("previewAction").style.display = "none";
+								//return false;
 							}
 							else if(maskCause!='' && !isValidhex_32(maskCause)){
 								alert("Please enter valid 32 bit value in Mask in Cause");
 								textToSave='';
-								return false;
+								document.getElementById("previewAction").style.display = "none";
+								//return false;
 							}
 					}
 					else if(noOfBits=='64'){
 							if(!isValidhex_64(dataCause)){
 								alert("Please enter valid 64 bit value in Data in Cause");
 								textToSave='';
-								return false;
+								document.getElementById("previewAction").style.display = "none";
+								//return false;
 							}else if(maskCause!='' && !isValidhex_64(maskCause)){
 								alert("Please enter valid 64 bit value in Mask in Cause");
 								textToSave='';
-								return false;
+								document.getElementById("previewAction").style.display = "none";
+								//return false;
 							}
 							else{
 									var temp1=dataCause.substring(2,10);
@@ -412,6 +503,9 @@
 							}
 						}
     				}
+				}
+				else{
+					addrType=cause_arr_val[2]; // For ALLONES AND ALLZEROS
 				}
 				if(addrChoice!='-1' && addrChoice=='logic'){
 					watchReg="LOGIC(" + watchReg + ")";
@@ -477,6 +571,7 @@
 					}					
 				}
 			}
+		}
 			// Cause Part ends
 			if(cause == 'no'){
 				if(chiplet=='yes'){
@@ -592,9 +687,20 @@
 			effectCount=lastCount+1;
 		}
 		function removeCause(that) {
+			var cause = document.getElementById("cause").value;
+			var rowCountCause = $(that).parent().parent().find('.dropdown-parent-cause').last().data().count;
+			if(rowCountCause=='1' && cause=='yes'){
+				alert("Please select No in causes");
+				return false;
+			}
 			$(that).closest('.dropdown-parent-cause').remove();
 		}
 		function removeEffect(that) {
+			var rowCountEffect = $(that).parent().parent().find('.dropdown-parent-effect').last().data().count;
+			if(rowCountEffect=='1'){
+				alert("Please have at least one row for Preview");
+				return false;
+			}
 			$(that).closest('.dropdown-parent-effect').remove();
 		}
 		function addDiv(parent_div, content, attrs) {
@@ -683,9 +789,50 @@
 			var regExp = new RegExp(/^0x[0-9A-F]{1,16}$/i);
 			if(value.length!=10 && value.length!=18 ){
 				alert("Please enter valid value in Watch Reg");
+				return false;
 			}
 			else if (!regExp.test(ele.value)){
 				alert("Please enter valid value in Watch Reg");
+				return false;
+			}
+		}
+		// TO check hex values for watch reg while preview action
+		function isValidhexValueWatchReg(value)
+		{
+			var regExp = new RegExp(/^0x[0-9A-F]{1,16}$/i);
+			if(value.length!=10 && value.length!=18 ){
+				return false;
+			}
+			else if (!regExp.test(value)){
+				return false;
+			}else{
+				return true;
+			}
+		}
+		// TO check hex values for Target Address in Cause reg while preview action
+				function isValidhexValueTargetCause(value)
+		{
+			var regExp = new RegExp(/^0x[0-9A-F]{1,16}$/i);
+			if(value.length!=10 && value.length!=18 ){
+				return false;
+			}
+			else if (!regExp.test(value)){
+				return false;
+			}else{
+				return true;
+			}
+		}
+		// TO check hex values for Target Address in Effect while preview action
+				function isValidhexValueTargetEffect(value)
+		{
+			var regExp = new RegExp(/^0x[0-9A-F]{1,16}$/i);
+			if(value.length!=10 && value.length!=18 ){
+				return false;
+			}
+			else if (!regExp.test(value)){
+				return false;
+			}else{
+				return true;
 			}
 		}
 		//To test Hex Values in Target Address in Cause
@@ -873,6 +1020,7 @@
 			<input type="text"  style="width: 90px;" class="box2" />
 
 			<input data-count="1" type="button" onclick="addCause(this)" value="+" />
+			<input data-count="1" type="button" onclick="removeCause(this)" value="-"/>
 		</div>
 	</div>
 		</br></br>
@@ -930,11 +1078,12 @@
 				<input type="text" style="width: 90px;" class="box2effect" />
 
 				<input type="button" onclick="addEffect(this)" value="+" />
+				<input data-count="1" type="button" onclick="removeEffect(this)" value="-"/>
 			</div>
 		</div>
 	
 		<div id="previewAction">
-			<textarea id="prevAction" rows="25" cols="80" readonly style="margin-left: 326px;margin-top: 29px;"></textarea>
+			<textarea id="prevAction" rows="25" cols="100" readonly style="margin: 29px 0px 0px 2px;width: 1093px;height: 370px;"></textarea>
 		</div>
 		<br>
 		<br>
