@@ -608,41 +608,35 @@
 			var label = document.getElementById("label").value;
 			var cause = document.getElementById("cause").value;
 			
-			if(chiplet=='-1'){
-				
+			if(chiplet=='-1'){				
 				textToSave="";
 				document.getElementById("previewAction").style.display = "none";
 				alert("Please select if you want to apply for Chiplet or not");
 				return false;
-			}else if(label==''){
-				
+			}else if(label==''){				
 				textToSave="";
 				document.getElementById("previewAction").style.display = "none";
 				alert("Please provide label value");
 				return false;
 			}
-			else if(addrChoice=='-1'){
-				
+			else if(addrChoice=='-1'){				
 				textToSave="";
 				document.getElementById("previewAction").style.display = "none";
 				alert("Please select your choice of address");
 				return false;
-			}else if(watchReg==''){
-				
+			}else if(watchReg==''){				
 				textToSave="";
 				document.getElementById("previewAction").style.display = "none";
 				alert("Please provide watch register address");
 				return false;
-			}else if(watchReg!='' && !isValidhexValueWatchReg(watchReg)){
-				
+			}else if(watchReg!='' && !isValidhexValueWatchReg(watchReg)){				
 				textToSave='';
 				document.getElementById("previewAction").style.display = "none";
 				alert("Please enter valid 32 or 64 bit value in Watch Register");
 				return false;
 			}
 			
-			else if(cause=='-1'){
-			
+			else if(cause=='-1'){			
 				textToSave="";
 				document.getElementById("previewAction").style.display = "none";
 				alert("Please choose if you want to select cause or not");
@@ -676,7 +670,7 @@
 
 		function addCause(that) {
 			var lastCount = $(that).parent().parent().find('.dropdown-parent-cause').last().data().count;
-			addDiv('causeDiv', `<div class="dropdown-cause-data-type" style="margin-left:-17px">Address type:<select id="dataTypeCause"><option value="-1">Select One</option><option value="regCause">Reg</option><option value="logicCause">Logic</option></select></div><label>Target Address</label><input type = "text" class ="targetAddr" style="margin-left:5px;width:90px" onblur="isValidhexTargetAddressCause(this)"/><div class="dropdown-cause-operation" style="margin-left:3px">Operation: <select id="operation" onchange="showProperTextBox(this)"><option value="-1">Select One</option><option value="AND">AND</option><option value="OR">OR</option><option value="EQUALTO">EQUALTO</option><option value="BIT_ON">BIT_ON</option><option value="BIT_OFF">BIT_OFF</option><option value="ALLONES">ALLONES</option><option value="ALLZEROS">ALLZEROS</option></select></div><div class="dropdown-cause-literal-type" style="margin-left:-15px">Data Type:<select id="literalTypeCause"><option value="-1">Select One</option><option value="literalCause">Literal</option><option value="regCause">Reg</option></select></div><div class="dropdown-cause-bit-type" style="margin-left:-15px">BITS:<select id="noOfBitsCause"><option value="-1">Select One</option><option value="32">32</option><option value="64">64</option></select></div><label style="margin-left:2px" class="bitNumCause">BIT Number</label><input type = "text" class ="bitNumber" style="margin-left:6px;width:90px" onkeypress="return isNumber(event)"/><label style="margin-left:4px" class="box1Cause">Data</label><input type = "text" class ="box1" style="margin-left:4px;width:90px"/><label style="margin-left:17px" class="box2Cause">Mask</label><input type = "text" class ="box2" style="margin-left:5px;width:90px"/><input type="button" onclick="addCause(this)" value="+" style="margin-left:4px"/><input type="button" onclick="removeCause(this)" value="-" style="margin-left:6px"/>`, {
+			addDiv('causeDiv', `<div class="dropdown-cause-data-type" style="margin-left:-14px">Address type:<select id="dataTypeCause" style="margin-left:4px"><option value="-1">Select One</option><option value="regCause">Reg</option><option value="logicCause">Logic</option></select></div><label style="margin-left:4px">Target Address</label><input type = "text" class ="targetAddr" style="margin-left:5px;width:90px" onblur="isValidhexTargetAddressCause(this)"/><div class="dropdown-cause-operation" style="margin-left:3px">Operation: <select id="operation" onchange="showProperTextBox(this)"><option value="-1">Select One</option><option value="AND">AND</option><option value="OR">OR</option><option value="EQUALTO">EQUALTO</option><option value="BIT_ON">BIT_ON</option><option value="BIT_OFF">BIT_OFF</option><option value="ALLONES">ALLONES</option><option value="ALLZEROS">ALLZEROS</option></select></div><div class="dropdown-cause-literal-type" style="margin-left:-10px">Data Type:<select id="literalTypeCause" style="margin-left:3px"><option value="-1">Select One</option><option value="literalCause">Literal</option><option value="regCause">Reg</option></select></div><div class="dropdown-cause-bit-type" style="margin-left:-11px">BITS:<select id="noOfBitsCause" style="margin-left:4px"><option value="-1">Select One</option><option value="32">32</option><option value="64">64</option></select></div><label style="margin-left:3px" class="bitNumCause">BIT Number</label><input type = "text" class ="bitNumber" style="margin-left:4px;width:60px" onkeypress="return isNumber(event)"/><label style="margin-left:4px" class="box1Cause">Data</label><input type = "text" class ="box1" style="margin-left:4px;width:90px"/><label style="margin-left:3px" class="box2Cause">Mask</label><input type = "text" class ="box2" style="margin-left:3px;width:90px"/><input type="button" onclick="addCause(this)" value="Add" style="margin-left:4px"/><input type="button" onclick="removeCause(this)" value="Remove" style="margin-left:4px"/>`, {
 				'class': 'dropdown-parent-cause',
 				'data-attr': 'attr',
 				'data-count': lastCount+1,
@@ -696,7 +690,7 @@
 		}
 		function addEffect(that) {
 			var lastCount = $(that).parent().parent().find('.dropdown-parent-effect').last().data().count;
-			addDiv('effectDiv', `<div class="dropdown-effect-data-type" style="margin-left:-17px">Address type:<select id="dataTypeEffect"><option value="-1">Select One</option><option value="regEffect">Reg</option><option value="logicEffect">Logic</option></select></div><label>Target Address</label><input type = "text" class ="targetEffectAddr" style="margin-left:5px;width:90px" onblur="isValidhexTargetAddressEffect(this)"/><div class="dropdown-effect-operation" style="margin-left:3px">Operation: <select id="operationEffect" onchange="showProperTextBoxEffect(this)"><option value="-1">Select One</option><option value="AND">AND</option><option value="OR">OR</option><option value="EQUALTO">EQUALTO</option><option value="BIT_ON">BIT_ON</option><option value="BIT_OFF">BIT_OFF</option><option value="ALLONES">ALLONES</option><option value="ALLZEROS">ALLZEROS</option></select></div><div class="dropdown-effect-literal-type" style="margin-left:-15px">Data Type:<select id="literalTypeEffect"><option value="-1">Select One</option><option value="literalEffect">Literal</option><option value="regEffect">Reg</option></select></div><div class="dropdown-effect-bit-type" style="margin-left:-15px">BITS:<select id="noOfBitsEffect"><option value="-1">Select One</option><option value="32">32</option><option value="64">64</option></select></div><label style="margin-left:2px" class="bitNumEffect">BIT Number</label><input type = "text" class ="bitNumberEffect" style="margin-left:6px;width:90px" onkeypress="return isNumber(event)"/><label style="margin-left:4px" class="box1Eff">Data</label><input type = "text" class ="box1effect" style="margin-left:4px;width:90px"/><label style="margin-left:17px" class="box2Eff">Mask</label><input type = "text" class ="box2effect" style="margin-left:5px;width:90px"/><input type="button" onclick="addEffect(this)" value="+" style="margin-left:4px"/><input type="button" onclick="removeEffect(this)" value="-" style="margin-left:6px"/>`, {
+			addDiv('effectDiv', `<div class="dropdown-effect-data-type" style="margin-left:-14px">Address type:<select id="dataTypeEffect" style="margin-left:4px"><option value="-1">Select One</option><option value="regEffect">Reg</option><option value="logicEffect">Logic</option></select></div><label style="margin-left:4px">Target Address</label><input type = "text" class ="targetEffectAddr" style="margin-left:5px;width:90px" onblur="isValidhexTargetAddressEffect(this)"/><div class="dropdown-effect-operation" style="margin-left:3px">Operation: <select id="operationEffect" onchange="showProperTextBoxEffect(this)"><option value="-1">Select One</option><option value="AND">AND</option><option value="OR">OR</option><option value="EQUALTO">EQUALTO</option><option value="BIT_ON">BIT_ON</option><option value="BIT_OFF">BIT_OFF</option><option value="ALLONES">ALLONES</option><option value="ALLZEROS">ALLZEROS</option></select></div><div class="dropdown-effect-literal-type" style="margin-left:-10px">Data Type:<select id="literalTypeEffect" style="margin-left:3px"><option value="-1">Select One</option><option value="literalEffect">Literal</option><option value="regEffect">Reg</option></select></div><div class="dropdown-effect-bit-type" style="margin-left:-11px">BITS:<select id="noOfBitsEffect" style="margin-left:4px"><option value="-1">Select One</option><option value="32">32</option><option value="64">64</option></select></div><label style="margin-left:3px" class="bitNumEffect">BIT Number</label><input type = "text" class ="bitNumberEffect" style="margin-left:4px;width:60px" onkeypress="return isNumber(event)"/><label style="margin-left:4px" class="box1Eff">Data</label><input type = "text" class ="box1effect" style="margin-left:4px;width:90px"/><label style="margin-left:3px" class="box2Eff">Mask</label><input type = "text" class ="box2effect" style="margin-left:3px;width:90px"/><input type="button" onclick="addEffect(this)" value="Add" style="margin-left:4px"/><input type="button" onclick="removeEffect(this)" value="Remove" style="margin-left:4px"/>`, {
 				'class': 'dropdown-parent-effect',
 				'data-attr': 'attr',
 				'data-count': lastCount+1,
@@ -715,21 +709,27 @@
 			effectCount=lastCount+1;
 		}
 		function removeCause(that) {
-			var cause = document.getElementById("cause").value;
-			var rowCountCause = $(that).parent().parent().find('.dropdown-parent-cause').last().data().count;
-			if(rowCountCause=='1' && cause=='yes'){
-				alert("Please select No in causes");
-				return false;
+			var r = confirm("Do you want to delete the cause?");
+			if (r == true) {
+				var cause = document.getElementById("cause").value;
+				var rowCountCause = $(that).parent().parent().find('.dropdown-parent-cause').last().data().count;
+				if(rowCountCause=='1' && cause=='yes'){
+					alert("Please select No in causes");
+					return false;
+				}
+				$(that).closest('.dropdown-parent-cause').remove();
 			}
-			$(that).closest('.dropdown-parent-cause').remove();
 		}
 		function removeEffect(that) {
-			var rowCountEffect = $(that).parent().parent().find('.dropdown-parent-effect').last().data().count;
-			if(rowCountEffect=='1'){
-				alert("Please have at least one row for Preview");
-				return false;
+			var r = confirm("Do you want to delete the effect?");
+			if (r == true) {
+				var rowCountEffect = $(that).parent().parent().find('.dropdown-parent-effect').last().data().count;
+				if(rowCountEffect=='1'){
+					alert("Please have at least one row for Preview");
+					return false;
+				}
+				$(that).closest('.dropdown-parent-effect').remove();
 			}
-			$(that).closest('.dropdown-parent-effect').remove();
 		}
 		function addDiv(parent_div, content, attrs) {
 			var div = document.createElement('div');
@@ -1039,16 +1039,16 @@
 			</div>
 
 			<label class="bitNumCause">BIT Number</label>
-			<input type="text" class="bitNumber" onkeypress="return isNumber(event)"/>
+			<input type="text" class="bitNumber" style="width: 60px;" onkeypress="return isNumber(event)"/>
 
 			<label class="box1Cause">Data</label>
 			<input type="text" style="width: 90px;" class="box1" />
 
-			<label class="box2Cause" style="margin-left: 13px;">Mask</label>
+			<label class="box2Cause" style="margin-left: 1px;">Mask</label>
 			<input type="text"  style="width: 90px;" class="box2" />
 
-			<input data-count="1" type="button" onclick="addCause(this)" value="+" />
-			<input data-count="1" type="button" onclick="removeCause(this)" value="-"/>
+			<input data-count="1" type="button" onclick="addCause(this)" value="Add" />
+			<input data-count="1" type="button" onclick="removeCause(this)" value="Remove"/>
 		</div>
 	</div>
 		</br></br>
@@ -1097,16 +1097,16 @@
 					</select>
 				</div>
 				<label class="bitNumEffect">BIT Number</label>
-				<input type="text" class="bitNumberEffect" style="width: 90px;" onkeypress="return isNumber(event)"/>
+				<input type="text" class="bitNumberEffect" style="width: 60px;" onkeypress="return isNumber(event)"/>
 				
 				<label class="box1Eff">Data</label>
 				<input type="text" style="width: 90px;" class="box1effect"/>
 
-				<label class="box2Eff" style="margin-left: 13px;">Mask</label>
+				<label class="box2Eff" style="margin-left: 1px;">Mask</label>
 				<input type="text" style="width: 90px;" class="box2effect" />
 
-				<input type="button" onclick="addEffect(this)" value="+" />
-				<input data-count="1" type="button" onclick="removeEffect(this)" value="-"/>
+				<input type="button" onclick="addEffect(this)" value="Add" />
+				<input data-count="1" type="button" onclick="removeEffect(this)" value="Remove"/>
 			</div>
 		</div>
 	
