@@ -205,10 +205,11 @@
 					var addrEff=effect_arr_val[0];
 					var operationEff=effect_arr_val[1];
 					
-					if(!isValidhexValueTargetEffect(addrEff)){
-						alert("Please enter valid 32 or 64 bit value in Target Address in Effect");
+					if(!isValidhexValueTargetEffect(addrEff)){					
 						textToSave='';
 						document.getElementById("previewAction").style.display = "none";
+						alert("Please enter valid 32 or 64 bit value in Target Address in Effect");
+						return false;
 					}
 
 					if(operationEff=='BIT_ON'){
@@ -229,25 +230,29 @@
 						addrTypeEff=effect_arr_val[6];
 						
 						if(noOfBitsEffect=='32'){
-							if(!isValidhex_32(dataEffect)){
-								alert("Please enter valid 32 bit value in Data in Effect");
+							if(!isValidhex_32(dataEffect)){								
 								textToSave='';
+								document.getElementById("previewAction").style.display = "none";
+								alert("Please enter valid 32 bit value in Data in Effect");
 								return false;
 							}
-							else if(maskEffect!='' && !isValidhex_32(maskEffect)){
-								alert("Please enter valid 32 bit value in Mask in Effect");
+							else if(maskEffect!='' && !isValidhex_32(maskEffect)){								
 								textToSave='';
+								document.getElementById("previewAction").style.display = "none";
+								alert("Please enter valid 32 bit value in Mask in Effect");
 								return false;
 							}
 						}
 						else if(noOfBitsEffect=='64'){
-							if(!isValidhex_64(dataEffect)){
+							if(!isValidhex_64(dataEffect)){								
+								textToSave='';
+								document.getElementById("previewAction").style.display = "none";
 								alert("Please enter valid 64 bit value in Data in Effect");
-								textToSave='';
 								return false;
-							}else if(maskEffect!='' && !isValidhex_64(maskEffect)){
-								alert("Please enter valid 64 bit value in Mask in Effect");
+							}else if(maskEffect!='' && !isValidhex_64(maskEffect)){								
 								textToSave='';
+								document.getElementById("previewAction").style.display = "none";
+								alert("Please enter valid 64 bit value in Mask in Effect");
 								return false;
 							}
 							else{
@@ -429,30 +434,30 @@
 					addrType=cause_arr_val[6];
 
 					if(noOfBits=='32'){
-							if(!isValidhex_32(dataCause)){
+							if(!isValidhex_32(dataCause)){								
+								textToSave='';
+								document.getElementById("previewAction").style.display = "none";
 								alert("Please enter valid 32 bit value in Data in Cause");
-								textToSave='';
-								document.getElementById("previewAction").style.display = "none";
-								//return false;
+								return false;
 							}
-							else if(maskCause!='' && !isValidhex_32(maskCause)){
-								alert("Please enter valid 32 bit value in Mask in Cause");
+							else if(maskCause!='' && !isValidhex_32(maskCause)){								
 								textToSave='';
 								document.getElementById("previewAction").style.display = "none";
-								//return false;
+								alert("Please enter valid 32 bit value in Mask in Cause");
+								return false;
 							}
 					}
 					else if(noOfBits=='64'){
-							if(!isValidhex_64(dataCause)){
+							if(!isValidhex_64(dataCause)){								
+								textToSave='';
+								document.getElementById("previewAction").style.display = "none";
 								alert("Please enter valid 64 bit value in Data in Cause");
+								return false;
+							}else if(maskCause!='' && !isValidhex_64(maskCause)){								
 								textToSave='';
 								document.getElementById("previewAction").style.display = "none";
-								//return false;
-							}else if(maskCause!='' && !isValidhex_64(maskCause)){
 								alert("Please enter valid 64 bit value in Mask in Cause");
-								textToSave='';
-								document.getElementById("previewAction").style.display = "none";
-								//return false;
+								return false;
 							}
 							else{
 									var temp1=dataCause.substring(2,10);
@@ -604,23 +609,46 @@
 			var cause = document.getElementById("cause").value;
 			
 			if(chiplet=='-1'){
+				
+				textToSave="";
+				document.getElementById("previewAction").style.display = "none";
 				alert("Please select if you want to apply for Chiplet or not");
 				return false;
 			}else if(label==''){
+				
+				textToSave="";
+				document.getElementById("previewAction").style.display = "none";
 				alert("Please provide label value");
 				return false;
 			}
 			else if(addrChoice=='-1'){
+				
+				textToSave="";
+				document.getElementById("previewAction").style.display = "none";
 				alert("Please select your choice of address");
 				return false;
 			}else if(watchReg==''){
+				
+				textToSave="";
+				document.getElementById("previewAction").style.display = "none";
 				alert("Please provide watch register address");
 				return false;
+			}else if(watchReg!='' && !isValidhexValueWatchReg(watchReg)){
+				
+				textToSave='';
+				document.getElementById("previewAction").style.display = "none";
+				alert("Please enter valid 32 or 64 bit value in Watch Register");
+				return false;
 			}
+			
 			else if(cause=='-1'){
+			
+				textToSave="";
+				document.getElementById("previewAction").style.display = "none";
 				alert("Please choose if you want to select cause or not");
 				return false;
 			}
+
 			var textToSave = textGlobal;			
 			textToSave = textToSave.replace(/\n/g, "\r\n");
 			var textToSaveAsBlob = new Blob([textToSave], { type: "text/plain" });
@@ -969,7 +997,7 @@
 		</select>
 	</div>
 	<div id="causeDiv">
-		<div class="dropdown-parent-cause" data-count=1 id="causeDiv">
+		<div class="dropdown-parent-cause" data-count=1 id="causeDiv1">
 			<div class="dropdown-cause-data-type" style="margin-left:-15px">
 						Address type:
 						<select id="dataTypeCause">
@@ -1028,7 +1056,7 @@
 			Please add the Effects:
 		</div>
 		<div id="effectDiv">
-			<div class="dropdown-parent-effect" data-count=1 id="effectDiv">
+			<div class="dropdown-parent-effect" data-count=1 id="effectDiv1">
 				<div class="dropdown-effect-data-type" style="margin-left:-15px">
 							Address type:
 							<select id="dataTypeEffect">
